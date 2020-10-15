@@ -1,0 +1,124 @@
+\documentclass{ecnreport}
+
+\stud{Master 1 CORO / Option Robotique}
+\topic{Robot Operating System}
+\author{G. Garcia, O. Kermorgant}
+
+\begin{document}
+
+\inserttitle{Robot Operating System}
+
+\insertsubtitle{Lab 4: Image topics}
+
+\section{Goals}
+
+In this lab you will practice image subscription and publishing in ROS. You will program a ROS node that subscribes to one 
+of the camera images of the robot and after overlaying your names onto the image it will be re-published in order to be visualized
+on Baxter's screen.
+
+\section{Deliverables}
+
+After validation, the whole package should be zipped and sent by mail (G. Garcia) or through the lab upload form (O. Kermorgant).
+
+\section{Tasks}
+
+Start by creating a ROS package (\texttt{catkin create pkg}) with dependencies on \texttt{baxter\_core\_msgs}, 
+ \texttt{sensor\_msgs} and \texttt{ecn\_common}.
+ Then modify \texttt{package.xml} and \texttt{CMakeLists.txt} to add the dependency on \texttt{cv\_bridge} by hand. 
+
+\subsection{First task: Baxter's camera images}
+
+\begin{itemize}
+\item Display the images in RViz. What are the name of the image topics?
+ \item Use the \texttt{image\_view} package to display images coming from the left and right arm cameras. 
+ \item Search for the name of the subscribed topic from Baxter that allows displaying images on its screen.
+\end{itemize}
+
+\subsection{Second task: Programming an image subscriber}
+
+In this task you will create a ROS node that subscribes to the \texttt{image\_in} topic and display it on your screen (with OpenCV's \texttt{imshow}).\\
+Run it through a launch file with the correct topic remapping in order to display either the left or the right image.
+
+\subsection{Third task: Programming an image republisher}
+
+Now that you know how to subscribe to an image topic, add a text parameter to your node. You then have to grab the current image, write the text parameter on it (see OpenCV function)
+and publish the resultant image on the {image\_out} topic.\\
+Run this node through a launch file with the correct topic remapping and parameter in order to see your text on Baxter's screen.
+
+
+\section{Informations}
+
+Tutorials can be found online about \emph{image\_transport} and \emph{cv\_bridge}.
+ 
+ \subsection{Avoiding conflicts between controllers}
+ 
+ During this lab, all the groups will try to display images on Baxter's screen and thus it is not advised
+ that you all run your nodes at the same time. In order to avoid this, a tool is provided in the  \texttt{ecn\_common}
+ package that will have your node wait for the availability of Baxter. The code in explained below:
+ 
+ \paragraph{C++: } The token manager relies on the class defined in \texttt{ecn\_common/token\_handle.h}. It can be used this way:
+\cppstyle \begin{lstlisting}
+#include <ecn_common/token_handle.h>
+// other includes and function definitions
+
+int main(int argc, char** argv)
+{
+    // initialize the node
+    ros::init(argc, argv, "my_node");
+
+    ecn::TokenHandle token();
+    // this class instance will return only when Baxter is available
+    
+    // initialize other variables
+
+    // begin main loop
+    while(ros::ok())
+    {
+        // do stuff
+        
+
+        // tell Baxter that you are still working and spin
+        token.update();
+        loop.sleep();
+        ros::spinOnce();
+    }
+}
+\end{lstlisting}
+
+
+ \paragraph{Python: } The token manager relies on the class defined in \texttt{ecn\_common.token\_handle}. It can be used this way:
+\pythonstyle \begin{lstlisting}
+#! /usr/bin/env python
+from ecn_common.token_handle import TokenHandle
+# other imports and function definitions
+
+# initialize the node
+rospy.init_node('my_node')
+
+token = TokenHandle()
+# this class instance will return only when Baxter is available
+
+#initialize other variables
+
+# begin main loop
+while not rospy.is_shutdown():
+    # do stuff
+    
+    
+    # tell Baxter that you are still working and spin
+    token.update();
+    rospy.sleep(0.1)
+
+\end{lstlisting}
+With this code, two groups can never control Baxter at the same time. When the controlling group ends their node (either from Ctrl-C or because of a crash) the token
+passes to the group that has been asking it for the longuest time.
+
+Remind the supervisor that they should have a \texttt{token\_manager} running on some computer of the room.
+
+
+
+
+
+
+
+\end{document}

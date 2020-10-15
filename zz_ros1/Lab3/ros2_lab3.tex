@@ -1,0 +1,140 @@
+\documentclass{ecnreport}
+
+\stud{Master 1 CORO / Option Robotique}
+\topic{Robot Operating System}
+\author{G. Garcia, O. Kermorgant}
+
+\begin{document}
+
+\inserttitle{Robot Operating System}
+
+\insertsubtitle{Lab 3: The ``Puppet hand'' node - services and TF}
+
+\section{Goals}
+
+The goal of this lab is to program a node that can move the left arm of Baxter in such a way that the left hand
+remains at the same 3D pose from the right hand, with their z-axes opposed. To do so, we will use services and
+3D transformations listeners and broadcasters.
+
+\section{Deliverables}
+
+After validation, the whole package should be zipped and sent by mail (G. Garcia) or through the lab upload form (O. Kermorgant).
+
+\section{How to reach the goal}
+
+One way to obtain the desired behavior of the `` puppet hand '' is to attach an additional frame to the
+right hand of the Baxter robot at the position and orientation where we wish to move the reference
+frame of the left hand.
+
+The controller node is a `` tf listener '': it monitors the position and orientation of the target with
+respect to the base frame of the robot and calls a service (Baxter inverse kinematics service) to
+calculate the joint positions which allows reaching the goal when sending a \texttt{joint\_command}
+topic for the left hand. To use a ROS service, the client node sends a service request message and
+waits for the corresponding service response message. Both messages are strictly typed data
+structures. You must check before starting to use the service that it is available. Moreover, you have
+to take into accound that maybe the service call is unsuccessful because there is no solution for that
+pose.
+
+
+\subsection{Informations}
+
+Tutorials can be found online about \emph{transform listeners} and \emph{transform broadcasters} (use the \texttt{tf2} fashion).
+
+You will also need to use the Baxter Inverse Kinematic Service. The corresponding service is defined as \texttt{baxter\_core\_msgs/SolvePositionIK}. You can 
+use \texttt{rossrv show} to get the request / response structure of this service. Tutorials also exist on how to define a service client in C++ and Python.
+This IK service expects a desired transform between the \texttt{base} and \texttt{left\_gripper} frames to find the corresponding joint positions.
+
+\subsection{Using \texttt{tf2}}
+
+TF is a standard topic to broadcast all frame transforms in the current setup. It also allows any node to retrieve the transform between any two links, as it stored the past broadcasted transforms. Instead of using classical publisher/subscriber, custom ones are available that work only on the \texttt{/tf} topic and only for 3D-transforms messages.
+
+The \texttt{tf2\_ros} package includes two ways to broadcast a transform between two links:
+\begin{itemize}
+	\item From C++ or Python code: use the provided \texttt{tf2\_ros/transform\_publisher}, this is usually used to broadcast non-constant transforms
+	\item A full node, \texttt{static\_transform\_broadcaster} that will publish a passed constant transform. This uses less bandwidth but the transform cannot be changed afterwards.
+\end{itemize}
+
+In this lab, the static transform broadcaster should be used from a launch file to publish the transform between the right gripper and the desired left gripper pose.
+
+\subsection{Tasks}
+
+\begin{itemize}
+	\item Define the nodes and topics that your application will use. 
+	\item Use the ROS package from lab2 but add a depencendy to \texttt{tf2\_ros}
+	\item Draw the expected graph of the application. 
+	\item Program the node in C++ and/or Python
+	\item Write a launch file that runs your node and the static transform broadcaster
+\end{itemize}
+ 
+ \subsection{Avoiding conflicts between controllers}
+ 
+ During this lab, all the groups will try to control the left arm and thus it is not advised
+ that you all run your nodes at the same time. In order to avoid this, a tool is provided in the  \texttt{ecn\_common}
+ package that will have your node wait for the availability of Baxter. The code in explained below:
+ 
+ \paragraph{C++: } The token manager relies on the class defined in \texttt{ecn\_common/token\_handle.h}. It can be used this way:
+\cppstyle \begin{lstlisting}
+#include <ecn_common/token_handle.h>
+// other includes and function definitions
+
+int main(int argc, char** argv)
+{
+    // initialize the node
+    ros::init(argc, argv, "my_node");
+
+    ecn::TokenHandle token();
+    // this class instance will return only when Baxter is available
+    
+    // initialize other variables
+
+    // begin main loop
+    while(ros::ok())
+    {
+        // do stuff
+        
+
+        // tell Baxter that you are still working and spin
+        token.update();
+        loop.sleep();
+        ros::spinOnce();
+    }
+}
+\end{lstlisting}
+
+
+ \paragraph{Python: } The token manager relies on the class defined in \texttt{ecn\_common.token\_handle}. It can be used this way:
+\pythonstyle \begin{lstlisting}
+#! /usr/bin/env python
+from ecn_common.token_handle import TokenHandle
+# other imports and function definitions
+
+# initialize the node
+rospy.init_node('my_node')
+
+token = TokenHandle()
+# this class instance will return only when Baxter is available
+
+#initialize other variables
+
+# begin main loop
+while not rospy.is_shutdown():
+    # do stuff
+    
+    
+    # tell Baxter that you are still working and spin
+    token.update();
+    rospy.sleep(0.1)
+
+\end{lstlisting}
+With this code, two groups can never control Baxter at the same time. When the controlling group ends their node (either from Ctrl-C or because of a crash) the token
+passes to the group that has been asking it for the longuest time.
+
+Remind the supervisor that they should have a \texttt{token\_manager} running on some computer of the room.
+
+
+
+
+
+
+
+\end{document}
