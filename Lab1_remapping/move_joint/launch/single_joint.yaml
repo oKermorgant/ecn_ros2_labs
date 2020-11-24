@@ -1,0 +1,6 @@
+setpoint:
+    type: example_interfaces/Float32
+    setpoint:
+        min: -1
+        max: 1
+        to: data

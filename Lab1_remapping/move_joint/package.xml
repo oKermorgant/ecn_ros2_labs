@@ -10,7 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>std_msgs</depend>
+  <depend>example_interfaces</depend>
   <depend>baxter_core_msgs</depend>
 
   <export>

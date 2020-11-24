@@ -5,8 +5,16 @@
 // include any thing required - do not forget to use the .hpp extension for ROS 2 files
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <algorithm>
 
 using namespace std::chrono_literals;
+
+// a useful function to get the index of a string in a vector of strings
+inline size_t findIndex(const std::string &name, const std::vector<std::string> & names)
+{
+    const auto elem = std::find(names.begin(), names.end(), name);
+    return std::distance(names.begin(), elem);
+}
 
 
 class BasicNode : public rclcpp::Node

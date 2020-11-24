@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(rclcpp_components REQUIRED)
 
 # TODO build the node as a library
 add_library(<your_node> SHARED <required_files>)

@@ -1,8 +1,8 @@
 \documentclass{ecnreport}
 
 \stud{Master 1 CORO / Option Robotique}
-\topic{Robot Operating System}
-\author{G. Garcia, O. Kermorgant}
+\topic{Robot Operating System (2)}
+\author{O. Kermorgant}
 
 \begin{document}
 
@@ -12,95 +12,139 @@
 
 \section{Goals}
 
-In this lab we will create a launcher that launches three nodes:
+In this lab we will see the main tools to analyze nodes and topics. A ROS 2 package will be used to move Baxter in a simulation environment.
 
-\begin{itemize}
- \item one (\texttt{capture\_key\_node}) for capturing keystrokes  from the keyboard and publish it in ROS.
-\item  the other two (\texttt{move\_joint\_node}) that subscribe to the same type of topic published by the \texttt{capture\_key\_node},
-moving each one a predefined articulation of the robot defined by parameter.
-The keys used to increment and decrement the position as well as the increment value are defined by parameters  in each node \texttt{move\_joint\_node}.
-\end{itemize}
+\subsection{Using the terminals}
 
-\section{Deliverables}
+In ROS, a lot of commands have to be run from the terminal. Each terminal should be configured either to run ROS 1 things, or ROS 2 things.
+A simple shortcut allows changing this:
+\begin{bashcodelarge}
+ros1ws  # type this to configure the terminal for ROS 1 (default)
+ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually)
+\end{bashcodelarge}
 
-\begin{itemize}
- \item A text file with the answers to the questions of this sheet
- \item The launch files of the first task
-\end{itemize}
-Files should be zipped and sent by mail (G. Garcia) or through the lab upload form (O. Kermorgant).
+Each time a package is compiled, the corresponding command (ros1ws / ros2ws) should be run in order to refresh the package list.
 
+\subsection{Running the simulation (already installed)}
+
+The Baxter simulator behaves as the actual Baxter, meaning that it works on ROS 1. A ROS 1 / ROS 2 bridge is used to forward messages between the two protocols.
+The simulation should be run from a ROS 1 terminal with:
+\begin{bashcodelarge}
+roslaunch baxter_simple_sim simulation.launch
+\end{bashcodelarge}
+
+It will display RViz with a few in/out topics that can be listed through:
+\begin{bashcodelarge}
+rostopic list (ROS 1)
+ros2 topic list (ROS 2)
+\end{bashcodelarge}
+
+\subsection{Compiling the package}
+
+The folder should be put in your ROS 2 workspace (\texttt{\texttilde/ros2/src}). Compilation is done by calling colcon from the root of the workspace:
+\begin{bashcodelarge}
+ ros2ws
+ cd ~/ros2
+ colbuild
+\end{bashcodelarge}
+
+\section{Running the control nodes}
+
+A basic control GUI can be run with:
+
+\begin{bashcodelarge}
+ ros2 launch move_joint slider_launch.py
+\end{bashcodelarge}
+It runs a node that sends the slider value on a topic (here \texttt{setpoint}).\\
+
+The Baxter robot has $2\times 7$ joints as shown in \Fig{baxter}, the names of which are listed in the table.
 \begin{figure}[h]\centering
  \includegraphics[width=.3\linewidth]{baxter} \\
   \begin{tabular}{|c|c|c|c|c|c|c|c|}
   \hline
-  group & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\\hline
   joints (\texttt{left\_} \& \texttt{right\_})& \texttt{s0} & \texttt{s1}& \texttt{e0} & \texttt{e1} & \texttt{w0} & \texttt{w1} & \texttt{w2} \\\hline
  \end{tabular}
  \caption{Baxter joints}
  \label{baxter}
 \end{figure}
-\section{Specification of the robot and available packages}
 
-The Baxter robot has $2\times 7$ joints as shown in \Fig{baxter}, the names of which are listed in the table.
-The goal is to have each group control 2 of the joints through the same topic.
+A special node called \texttt{move\_joint} should be used to change the value published by the slider GUI, to the setpoint of a particular joint:
+\begin{bashcodelarge}
+ ros2 run move_joint move_joint
+\end{bashcodelarge}
 
-\subsection{Available packages}
+\subsection{Initial state of the control nodes}
 
-Two packages are included in this lab:
+Use \texttt{ros2 node} and \texttt{ros2 topic} to get the information on the nodes. There are currently two limitations:
 \begin{itemize}
- \item \texttt{capture\_key} contains a single node (\texttt{capture\_key\_node}) that:
- \begin{itemize}
-  \item Captures the keystrokes
-  \item Publishes their ASCII code on the \texttt{/key\_typed} topic
-  \item Does not subscribe to any topic
- \end{itemize}
- \item \texttt{move\_joint} contains a single node (\texttt{move\_joint\_node}) that:
- \begin{itemize}
-  \item Moves the joint of a robot in position mode, incremening or decrementing it according to the key which as been typed.
-  \item Subscribes to:
-  \begin{itemize}
-   \item \texttt{/key\_hit} as topic for the incoming key strokes
-   \item \texttt{/robot/joint\_states} for the current state variables of the robot
-  \end{itemize}
-  \item Publishes a joint command for the controlled joint, to the topic \texttt{/joint\_command}
-  \item Has the following parameters:
-  \begin{itemize}
-   \item \texttt{joint\_name} to tell the joint to be controlled. This parameter is mandatory and does not have a default value.
-   \item \texttt{incr\_key} for the increment key (default +, ASCII code 43)
-   \item \texttt{decr\_key} for the increment key (default -, ASCII code 45)
-  \end{itemize}
- \end{itemize}
+ \item The \texttt{move\_joint} node needs a parameter to tell which joint it should be controlling
+ \item The slider publishes on \texttt{setpoint} while the  \texttt{move\_joint} node listens to \texttt{joint\_setpoint}
 \end{itemize}
+Additionally, it would be nice to run the two nodes in the same lauch file.
 
-\section{Using launch files}
+\subsection{Regroup all nodes in the same launch file}
 
-Tutorials on how to use launch files can be found on internet. These files allow running several nodes in a single command.
+Open the \texttt{slider\_launch.py} and add a line equivalent to calling \texttt{ros2 run move\_joint move\_joint}.\\
+Then, add a parameter to tell which joint should be controlled:\\\texttt{parameters = \{'joint\_name': 'right\_e0'\}}\\
 
-Create a launch file to control two of the joints of the Baxter robot (1 \texttt{capture\_key\_node} + 2 \texttt{move\_joint\_node}), according to the table
-and your group number. The contributions of all groups will allow controlling most of the joints. 
+To run this launch file, you can go to its folder and type \texttt{ros2 launch ./slider\_launch.py}.\\
+Display the graph (\texttt{rqt\_graph}) to detect that the slider node and \texttt{move\_joint} do not communicate, because they do not use the same topics.
 
-\subsection{First launch file attempt}
+\subsection{Remapping}
 
-For this launch; the \texttt{<node ... /node>} sections should be minimal: no node renaming, no remapping.
+In this section we will remap the topic name of \texttt{move\_joint} such that is uses \texttt{setpoint} instead of \texttt{joint\_setpoint}.\\
 
-\begin{itemize}
- \item What happens when this is launched from only one computer?
- \item What happens when this is launched from several computers?
- \item Coordinate with other groups to have nodes with different names.
- \item Coordinate with other groups to have nodes in different namespaces (use the \texttt{group} tag).
-\end{itemize}
+Modify the launch file by adding this argument to the \texttt{move\_joint} node:
 
-\subsection{Second launch file attempt}
+\begin{pythoncodelarge}
+remappings = {'joint_setpoint': 'setpoint'}.items()
+\end{pythoncodelarge}
+Run the launch file again and you should be able to control the chosen joint.
 
-What is the behavior of the current launch file? Explain how to solve the issue (at this point poor Baxter has not moved yet).
+\section{Playing with launch files}
 
-\subsection{Third launch file attempt}
+\subsection{Argument for joint name}
 
-Now modify the launch file so that topics are remapped and Baxter actually moves accordingly to each group's typed keys.
+Now that a launch file exists to control 1 joint from a slider, we will change the hard-coded joint name to an argument:
+\begin{pythoncodelarge}
+sl.declare_arg('name', 'right_e0')
+\end{pythoncodelarge}
+This syntax tells the launch file that is now has a \texttt{name} argument, with default value \texttt{'right\_e0'}.\\
+
+Change the hard-coded value to the argument one \texttt{sl.arg('right\_e0')} and check that the behavior is the same\\
+
+Also, you can rename the slider GUI by giving an additional argument:
+\begin{pythoncodelarge}
+sl.node('slider_publisher', 'slider_publisher', name=sl.arg('name'), ...)
+\end{pythoncodelarge}
+
+Then, run the launch file with another name, for instance:\\ \texttt{ros2 launch ./slider\_launch.py name:=left\_e0}\\
+On another terminal, try to run the same launch file for another joint. What happens?\\
 
 
- 
 
+\subsection{Including launch files in other launch files}
+
+In this last section we will write a new launch file that will include the previous one, for various joint names. In order to avoid node / topic duplicates, each nodes relative to a specific joint will be in their own namespace. 
+
+The syntax to include a launch file in another one is as follow:
+\begin{pythoncodelarge}
+sl.include('move_joint', 'slider_launch.py', launch_arguments = [('name', 'right_e0')])
+\end{pythoncodelarge}
+
+It should be called from a namespace block, with this syntax:
+\begin{pythoncodelarge}
+with sl.group(ns = 'right_e0'):
+  sl.include('move_joint', 'slider_launch.py', launch_arguments = [('name', 'right_e0')])
+\end{pythoncodelarge}
+
+Check that the behavior is similar to the previous one. Then, write a for loop to run this code for many joint names:
+\begin{pythoncodelarge}
+joints = ('right_e0', 'right_e1', ...)
+for joint in joints:
+    with sl.group(ns = joint):
+        sl.include(...)
+\end{pythoncodelarge}
 
 
 
