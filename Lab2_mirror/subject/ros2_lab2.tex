@@ -1,0 +1,44 @@
+\documentclass{ecnreport}
+
+\stud{Master 1 CORO / Option Robotique}
+\topic{Robot Operating System}
+\author{O. Kermorgant}
+
+\begin{document}
+
+\inserttitle{Robot Operating System}
+
+\insertsubtitle{Lab 2: the ``mirror arm'' node}
+
+\section{Goals}
+
+Program a node that can move the left arm of the Baxter robot in a symmetric way with respect to
+the motion of the right arm (symmetry with respect to the sagittal plane of the robot).
+The node should be usable in position mode (the joint positions of the master arm are `` copied to ''
+the slave arm) or in velocity mode (the joint velocities of the master arm are `` copied to '' the slave
+arm).
+
+\section{Information}
+
+To create the control loop you must get the current \emph{state} of the right arm and send \emph{commands} to 
+the left arm. To not hesitate to use RViz to compare the frames, some of the joints need to get the negative
+value of the other arm.
+
+\subsection{Tasks}
+
+\begin{itemize}
+\item Identify the topics that the node should subscribe and publish to.
+ \item Create a ROS package (\texttt{catkin create pkg <name> --catkin-deps <dependencies>}) with dependencies on \texttt{baxter\_core\_msgs}, 
+ \texttt{sensor\_msgs} and \texttt{ecn\_common}
+ \item Draw the expected graph of the application. 
+ \item Program the node in C++ and/or Python
+ \end{itemize}
+
+Once the package is created, feel free to use the provided \texttt{lab2\_mirror.cpp} file as a template for the node code.
+ 
+
+
+
+
+
+\end{document}

@@ -72,7 +72,7 @@ private:
   void mirrorToLeft(const JointState::UniquePtr &msg)
   {
     // this function should read msg->name for right joints and copy the value to cmd.command
-    // even-numbered joints should be inverses (opposite directions to mirror)
+    // even-numbered joints should be inversed (opposite directions to mirror)
   }
 };
 
