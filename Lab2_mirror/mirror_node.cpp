@@ -8,7 +8,10 @@
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <algorithm>
 
+// access time units such as 100ms
 using namespace std::chrono_literals;
+
+// some shortcuts for message classes
 using sensor_msgs::msg::JointState;
 using baxter_core_msgs::msg::JointCommand;
 
@@ -32,48 +35,19 @@ public:
     // these suffixes may be useful
     const std::vector<std::string> suffixes = {"_s0", "_s1", "_e0", "_e1", "_w0", "_w1", "_w2"};
 
-    // init command message
-    cmd.mode = 1;
-    for(auto name: suffixes)
-    {
-      // build fields .names and .command
-    }
-
     // init subscriber
-    subscriber = create_subscription<JointState>(
-          "/robot/joint_states",    // which topic
-          10,         // QoS
-          [this](JointState::UniquePtr msg)    // callback are perfect for lambdas
-    {
-        mirrorToLeft(msg);
-  });
 
-    // init publishers
-    publisher = create_publisher<JointCommand>("/robot/limb/left/joint_command", 10);   // topic + QoS
+    // init publisher
 
-    // init timer - the function will be called with the given rate
-    publish_timer = create_wall_timer(100ms,    // rate
-                                      [&]()
-    {publisher->publish(cmd);});
+    // init timer - the passed function will be called with the given rate
+    
   }
   
 private:
 
-  std::vector<std::string> right_joints;
-
   // declare any subscriber / publisher / timer
-  rclcpp::Subscription<JointState>::SharedPtr subscriber;
-
-  rclcpp::Publisher<JointCommand>::SharedPtr publisher;
-  JointCommand cmd;
-
-  rclcpp::TimerBase::SharedPtr publish_timer;
-
-  void mirrorToLeft(const JointState::UniquePtr &msg)
-  {
-    // this function should read msg->name for right joints and copy the value to cmd.command
-    // even-numbered joints should be inversed (opposite directions to mirror)
-  }
+  
+  
 };
 
 }

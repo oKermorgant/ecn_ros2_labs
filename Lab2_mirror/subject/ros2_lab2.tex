@@ -14,31 +14,28 @@
 
 Program a node that can move the left arm of the Baxter robot in a symmetric way with respect to
 the motion of the right arm (symmetry with respect to the sagittal plane of the robot).
-The node should be usable in position mode (the joint positions of the master arm are `` copied to ''
-the slave arm) or in velocity mode (the joint velocities of the master arm are `` copied to '' the slave
-arm).
+The node should work in position mode. \\
 
-\section{Information}
+The simulation should be started in a ROS 1 console with:
+\begin{bashcodelarge}
+ rosrun baxter_simple_sim simulation.launch lab:=mirror
+\end{bashcodelarge}
+
+
+\section{ROS concepts}
 
 To create the control loop you must get the current \emph{state} of the right arm and send \emph{commands} to 
-the left arm. To not hesitate to use RViz to compare the frames, some of the joints need to get the negative
+the left arm. You thus need to subcribe and publish to some topics. To not hesitate to use RViz to compare the frames, some of the joints need to get the negative
 value of the other arm.
 
-\subsection{Tasks}
+\section{Tasks}
 
 \begin{itemize}
-\item Identify the topics that the node should subscribe and publish to.
- \item Create a ROS package (\texttt{catkin create pkg <name> --catkin-deps <dependencies>}) with dependencies on \texttt{baxter\_core\_msgs}, 
- \texttt{sensor\_msgs} and \texttt{ecn\_common}
- \item Draw the expected graph of the application. 
- \item Program the node in C++ and/or Python
- \end{itemize}
+\item Identify the topics that the node should subscribe and publish to: names, message type
+\item Check the online documentation ``ROS 2 C++ topics'' to get the overall syntax. This work requires at least a publisher, a subscriber and a timer
+\item Program the node in C++ (and then in Python3 if you feel like it)
+\end{itemize}
 
-Once the package is created, feel free to use the provided \texttt{lab2\_mirror.cpp} file as a template for the node code.
- 
-
-
-
-
-
+The package is already created for this lab (\texttt{lab2\_mirror}), you just have to update the C++ file and compile it.\\
+Feel free to keep this package as a template for future packages / nodes that you will create.
 \end{document}
