@@ -18,14 +18,14 @@ The node should work in position mode. \\
 
 The simulation should be started in a ROS 1 console with:
 \begin{bashcodelarge}
- rosrun baxter_simple_sim simulation.launch lab:=mirror
+ roslaunch baxter_simple_sim simulation.launch lab:=mirror
 \end{bashcodelarge}
 
 
 \section{ROS concepts}
 
 To create the control loop you must get the current \emph{state} of the right arm and send \emph{commands} to 
-the left arm. You thus need to subcribe and publish to some topics. To not hesitate to use RViz to compare the frames, some of the joints need to get the negative
+the left arm. You thus need to subcribe and publish to some topics. To not hesitate to use RViz to compare the frames, some of the joints need to get the \textbf{negative}
 value of the other arm.
 
 \section{Tasks}

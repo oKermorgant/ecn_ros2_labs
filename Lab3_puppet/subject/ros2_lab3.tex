@@ -17,7 +17,7 @@ This time, a constant 3D transform will be imposed between the left and right gr
 
 The simulation should be started in a ROS 1 console with:
 \begin{bashcodelarge}
- rosrun baxter_simple_sim simulation.launch lab:=puppet
+ roslaunch baxter_simple_sim simulation.launch lab:=puppet
 \end{bashcodelarge}
 
 \section{ROS concepts}
@@ -28,7 +28,7 @@ In order to control the left arm, you need to publish a command message on the s
 
 \subsection{Using TF}
 
-In ROS, the \texttt{/tf} topic conveys many 3D transforms between frames, forming a tree. A TF listener can be instanciated in a node in order to retrieve any transform between two frames. \\
+In ROS, the \texttt{/tf} topic conveys many 3D transforms between frames, forming a tree. A TF listener can be instantiated in a node in order to retrieve any transform between two frames. \\
 In our case, the desired pose of the left gripper will be defined as a new frame,,  relative to the right gripper and called \texttt{'left\_gripper\_desired'}.\\
 The node \texttt{static\_transform\_publisher} from the \texttt{tf2\_ros} package is designed to publish this kind of fixed transform between frames:
 \begin{bashcodelarge}
@@ -37,7 +37,7 @@ The node \texttt{static\_transform\_publisher} from the \texttt{tf2\_ros} packag
 \begin{itemize}
 \item \texttt{frame\_id} is the reference frame (here \texttt{right\_gripper})
 \item \texttt{child\_frame\_id} is the target frame (here \texttt{left\_gripper\_desired})
- \item \texttt{x y z yaw pitch roll} is the 3D transform (here \texttt{0 0 0.2 0 3.14 0})
+ \item \texttt{x y z yaw pitch roll} is the 3D transform (here \texttt{0 0 0.1 0 3.14 0})
 \end{itemize}
 
 
@@ -61,7 +61,7 @@ A single launch file should be written in order to regroup the two given command
  
  With the simulation and your launch file running, check that you can indeed retrieve the current 3D transform between the frames \texttt{base} and \texttt{left\_gripper\_desired}:
  \begin{bashcodelarge}
- ros2 tf2_ros tf2_echo base left_gripper_desired
+ ros2 run tf2_ros tf2_echo base left_gripper_desired
 \end{bashcodelarge}
 
 
@@ -69,11 +69,12 @@ A single launch file should be written in order to regroup the two given command
 \section{Tasks}
 
 \begin{itemize}
-\item Identify the topics that the node should subscribe and publish to: names, message type
-\item Check the online documentation ``ROS 2 C++ topics'' to get the overall syntax. This work requires at least a publisher, a subscriber and a timer
+\item Identify the topics that the node should publish to: names, message type
+\item Identify the services that the node need in order to convert 3D transform to joint positions: names, service type
+\item Check the online documentation ``ROS 2 C++ services'' to get the overall syntax. This work requires at least a publisher, a timer, tf, and service client
 \item Program the node in C++ (and then in Python3 if you feel like it)
 \end{itemize}
 
-The package is already created for this lab (\texttt{lab2\_mirror}), you just have to update the C++ file and compile it.\\
+The package is already created for this lab (\texttt{lab3\_puppet}), you just have to update the C++ file and compile it.\\
 Feel free to keep this package as a template for future packages / nodes that you will create.
 \end{document}
