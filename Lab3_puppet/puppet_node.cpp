@@ -36,7 +36,8 @@ public:
     // IK service wrapper into IKNode
     ik_node.init("/ExternalTools/left/PositionKinematicsNode/IKService");
 
-    // static broadcast from c++ (should / could be done from independent node
+    // static broadcast from c++ (should / could be done from independent node)
+    // Commend this section once you add the static_transform_publisher node in a launch file
     geometry_msgs::msg::TransformStamped offset;
     offset.header.set__stamp(now());
     offset.header.frame_id = "right_gripper";
@@ -49,7 +50,7 @@ public:
   
 private:
 
-    // declare member variables for command publisher and timer
+  // declare member variables for command publisher and timer
 
   ServiceNodeSync<SolvePositionIK> ik_node;
 
@@ -63,12 +64,13 @@ private:
     // check if the transform from base to left_gripper_desired is available
     if(tf_buffer.canTransform("left_gripper_desired", "base", tf2::TimePointZero, tf2::durationFromSec(1.0)))
     {
-        // get this transform with tf_buffer.lookupTransform("base", "left_gripper_target"
+      // get this transform with tf_buffer.lookupTransform("base", "left_gripper_desired", ...
         
-        // build service request SolvePositionIK::Request from obtained transform
-        
-        // call service and get response
-      auto response = ik_node.sendRequest(req);
+      // build service request (req) SolvePositionIK::Request from obtained transform
+  //  auto req = ... 
+     
+      // call service and get response
+  //  auto response = ik_node.sendRequest(req);
 
       // copy response data to joint command and publish
     }
