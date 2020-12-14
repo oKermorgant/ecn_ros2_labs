@@ -66,7 +66,8 @@ private:
         // get this transform with tf_buffer.lookupTransform("base", "left_gripper_target"
         
         // build service request SolvePositionIK::Request from obtained transform
-        
+        SolvePositionIK::Request req;
+
         // call service and get response
       auto response = ik_node.sendRequest(req);
 
@@ -78,7 +79,4 @@ private:
 
 
 #include "rclcpp_components/register_node_macro.hpp"
-
 RCLCPP_COMPONENTS_REGISTER_NODE(lab3_puppet::PuppetNode)
-
-
