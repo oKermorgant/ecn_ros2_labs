@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<robot name="bb8" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+<xacro:include filename="robot.xacro" />
+<xacro:arg name="name" default="bb8"/>
+
+
+<material name="blue">
+    <color rgba="0 0 .8 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="orange">
+    <color rgba="1 .5 0 1"/>
+  </material>
+    <material name="grey">
+    <color rgba=".5 .5 .5 1"/>
+  </material>
+      <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+
+<!-- Body properties -->
+<xacro:property name="robot_name" value="$(arg name)"/>  
+<xacro:property name="radius" value=".27"/>
+<xacro:property name="torso" value="${radius}"/>
+<xacro:property name="neck" value="${.1*radius}"/>
+
+<xacro:macro name="body_cyl" params="name rpy color">
+    <link name="$(arg name)/${name}">
+    <visual>
+      <geometry>
+        <cylinder radius="${.5*radius}" length="${1.77*radius}"/>
+      </geometry>
+      <material name="${cyl_color}"/>
+    </visual>
+  </link>
+  
+  <joint name="${name}" type="fixed">
+      <parent link="$(arg name)/wheel"/>
+      <child link="$(arg name)/${name}"/>
+      <origin rpy="${rpy}"/>
+      </joint>
+</xacro:macro>
+
+<xacro:robot name="$(arg name)" torso="${torso}" neck="${neck}" radius="${radius}"/>
+
+<xacro:if value="${robot_name == 'bb8'}">
+    <xacro:property name="cyl_color" value="orange"/>
+    <xacro:property name="wheel_color" value="white"/>
+
+    <link name="bb8/head">
+      <visual>
+      <geometry>
+        <sphere radius="${.52*radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+  </link>
+  
+      <link name="bb8/eye">
+      <visual>
+      <geometry>
+          <cylinder radius="${.12*radius}" length="${.35*radius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+  
+   <joint name="eye" type="fixed">
+    <parent link="bb8/head"/>
+    <child link="bb8/eye"/>
+    <origin xyz = "${.32*radius} 0 ${.2*radius}" rpy="0 ${PI/2} 0"/>
+  </joint>
+  
+  <link name="bb8/crown">
+      <visual>
+      <geometry>
+          <cylinder radius="${.35*radius}" length="${.35*radius}"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+  
+    <joint name="crown" type="fixed">
+    <parent link="bb8/head"/>
+    <child link="bb8/crown"/>
+    <origin xyz = "0 0 ${.25*radius}"/>
+  </joint>
+
+
+</xacro:if>
+
+<xacro:if value="${robot_name == 'bb9'}">
+<xacro:property name="cyl_color" value="grey"/>
+<xacro:property name="wheel_color" value="black"/>
+
+  <link name="bb9/head">
+      <visual>
+      <geometry>
+        <cylinder radius="${.50*radius}" length="${.32*radius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+  
+      <link name="bb9/eye">
+      <visual>
+      <geometry>
+          <cylinder radius="${.1*radius}" length="${.35*radius}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+  </link>
+  
+      <joint name="eye" type="fixed">
+    <parent link="bb9/head"/>
+    <child link="bb9/eye"/>
+    <origin xyz = "${.33*radius} 0 0" rpy="0 ${PI/2} 0"/>
+  </joint>
+  
+    <link name="bb9/crown">
+      <visual>
+      <geometry>
+          <cylinder radius="${.35*radius}" length="${.20*radius}"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+  
+    <joint name="crown" type="fixed">
+    <parent link="bb9/head"/>
+    <child link="bb9/crown"/>
+    <origin xyz = "0 0 ${.11*radius}"/>
+  </joint>
+
+</xacro:if>
+
+
+  
+ <!-- wheel links --> 
+  <link name="$(arg name)/wheel">
+    <visual>
+      <geometry>
+        <sphere radius="${radius}"/>
+      </geometry>
+      <material name="${wheel_color}"/>
+    </visual>
+  </link>  
+  
+  <xacro:body_cyl name="cx" rpy="${PI/2} 0 0" color="${cyl_color}"/>
+  <xacro:body_cyl name="cz" rpy="0 0 0" color="${cyl_color}"/>
+  <xacro:body_cyl name="cy" rpy="0 ${PI/2} 0" color="${cyl_color}"/>  
+  
+</robot>

@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+
+<robot name="d0" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+<xacro:include filename="robot.xacro" />
+<xacro:arg name="name" default="d0"/>
+
+<material name="blue">
+    <color rgba="0 0 .8 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="orange">
+    <color rgba="1 .5 0 1"/>
+  </material>
+    <material name="grey">
+    <color rgba=".5 .5 .5 1"/>
+  </material>
+      <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+<material name="green">
+    <color rgba="0 0.6 0 1"/>
+  </material>
+  
+<!-- Body properties -->
+<xacro:property name="robot_name" value="$(arg name)"/>  
+<xacro:property name="radius" value=".16"/>
+<xacro:property name="torso" value="${1.2*radius}"/>
+<xacro:property name="neck" value="${0.45*radius}"/>
+<xacro:property name="width" value="${0.6*radius}"/>
+<xacro:property name="dx" value="${0.05*radius}"/>
+<xacro:property name="dr" value="${0.01*radius}"/>
+
+<xacro:macro name="cone" params="color n x rad">
+    <visual>     
+      <origin xyz="${x} 0 0" rpy="0 ${PI/2} 0"/>
+      <geometry>
+        <cylinder radius="${rad}" length="${dx}"/>
+      </geometry>
+      <material name="${color}"/>
+    </visual>
+    <xacro:if value="${n}">
+        <xacro:cone n="${n-1}" color="${color}" x="${x+dx}" rad="${rad-dr}"/>
+    </xacro:if>
+</xacro:macro>
+
+<xacro:robot name="$(arg name)" torso="${torso}" neck="${neck}" radius="${radius}"/>
+
+<xacro:if value="${robot_name == 'd0'}">
+    <xacro:property name="noze_color" value="green"/>
+    <xacro:property name="wheel_color" value="white"/>
+    <xacro:property name="torso_color" value="grey"/>
+    <xacro:property name="neck_color" value="black"/>
+</xacro:if>
+
+<xacro:if value="${robot_name == 'd9'}">
+    <xacro:property name="noze_color" value="red"/>
+    <xacro:property name="wheel_color" value="black"/>
+    <xacro:property name="torso_color" value="grey"/>
+    <xacro:property name="neck_color" value="grey"/>
+</xacro:if>
+
+
+ <!-- wheel links --> 
+  <link name="$(arg name)/wheel">
+    <visual>
+      <origin rpy="${PI/2} 0 0"/>
+      <geometry>
+        <cylinder radius="${radius}" length="${width}"/>
+      </geometry>
+      <material name="${wheel_color}"/>
+    </visual>
+</link>
+<link name="$(arg name)/wheel1">    
+    <visual> 
+    <origin xyz="${0.4*radius} 0 ${0.4*radius}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${0.4*radius} ${1.01*width} ${0.4*radius}"/>
+      </geometry>
+      <material name="${noze_color}"/>
+    </visual>     
+    <visual> 
+    <origin xyz="${-0.4*radius} 0 ${0.4*radius}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${0.4*radius} ${1.01*width} ${0.4*radius}"/>
+      </geometry>
+      <material name="${noze_color}"/>
+    </visual>     
+  </link>
+<joint name="wheel1" type="fixed">
+      <parent link="$(arg name)/wheel"/>
+      <child link="$(arg name)/wheel1"/>
+</joint>  
+  
+<!-- torso links -->
+  <link name="$(arg name)/torso1">
+    <visual>
+      <origin xyz="0 ${0.52*width} ${torso/2}"/>
+      <geometry>
+        <cylinder radius="${0.08*radius}" length="${torso}"/>
+      </geometry>
+      <material name="${torso_color}"/>
+    </visual>
+</link>
+  <joint name="torso1" type="fixed">
+      <parent link="$(arg name)/torso"/>
+      <child link="$(arg name)/torso1"/>
+</joint>
+
+  <link name="$(arg name)/torso2">
+    <visual>
+      <origin xyz="0 0 ${torso}"/>
+      <geometry>
+        <box size="${0.38*radius} ${0.95*width} ${0.2*radius}"/>
+      </geometry>
+      <material name="${wheel_color}"/>
+    </visual>
+</link>
+  <joint name="torso2" type="fixed">
+      <parent link="$(arg name)/torso"/>
+      <child link="$(arg name)/torso2"/>
+</joint> 
+
+  <link name="$(arg name)/torso3">
+    <visual>
+      <origin xyz="0 0 ${torso+0.15*radius}"/>
+      <geometry>
+        <box size="${0.3*radius} ${0.7*width} ${0.3*radius}"/>
+      </geometry>
+      <material name="${neck_color}"/>
+    </visual>
+</link>
+  <joint name="torso3" type="fixed">
+      <parent link="$(arg name)/torso"/>
+      <child link="$(arg name)/torso3"/>
+</joint> 
+  
+<!-- head links -->
+  <link name="$(arg name)/head">
+    <xacro:cone n="18" color="${wheel_color}" x="${-0.5*radius}" rad="${0.4*radius}"/>
+    </link> 
+  <link name="$(arg name)/head2">
+    <xacro:cone n="5" color="${noze_color}" x="${-0.5*radius+18*dx}" rad="${0.4*radius-18*dr}"/>
+  </link>  
+<joint name="head2" type="fixed">
+      <parent link="$(arg name)/head"/>
+      <child link="$(arg name)/head2"/>
+</joint> 
+
+<xacro:macro name="antenna" params="y z rpy">
+    <visual>     
+      <origin xyz="${-0.7*radius} ${y} ${z}" rpy="${rpy}"/>
+      <geometry>
+        <cylinder radius="${0.01*radius}" length="${radius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+</xacro:macro>
+
+  <link name="$(arg name)/antenna">
+      <xacro:antenna y="${0}" z="${-0.4*radius}" rpy="0 ${PI/2-PI/10} 0"/>
+      <xacro:antenna y="${0.3*radius}" z="${0.3*radius}" rpy="${PI/10} ${PI/2+PI/10} 0"/>
+      <xacro:antenna y="${-0.3*radius}" z="${0.3*radius}" rpy="${-PI/10} ${PI/2+PI/10} 0"/>
+  </link> 
+    <joint name="antenna" type="fixed">
+      <parent link="$(arg name)/head"/>
+      <child link="$(arg name)/antenna"/>
+</joint> 
+
+<xacro:macro name="eye" params="y z rpy">
+    <visual>     
+      <origin xyz="0 ${y} ${z}" rpy="${rpy}"/>
+      <geometry>
+        <cylinder radius="${0.035*radius}" length="${0.5*radius}"/>
+      </geometry>
+      <material name="${neck_color}"/>
+    </visual>
+</xacro:macro>
+
+  <link name="$(arg name)/eyes">
+      <xacro:eye y="${0.2*radius}" z="${0.38*radius-18*dr}" rpy="0 ${PI/2+PI/20} ${-PI/24}"/>
+      <xacro:eye y="${-0.2*radius}" z="${0.38*radius-18*dr}" rpy="0 ${PI/2+PI/20} ${PI/24}"/>
+      <xacro:eye y="${0}" z="${0.46*radius-18*dr}" rpy="0 ${PI/2+PI/16} 0"/>
+  </link> 
+  
+    <joint name="eyes" type="fixed">
+      <parent link="$(arg name)/head"/>
+      <child link="$(arg name)/eyes"/>
+</joint> 
+  
+</robot>

@@ -34,6 +34,8 @@ public:
     // init whatever is needed for your node
     // these suffixes may be useful
     const std::vector<std::string> suffixes = {"_s0", "_s1", "_e0", "_e1", "_w0", "_w1", "_w2"};
+    
+    // init command message
 
     // init subscriber
 
@@ -45,7 +47,7 @@ public:
   
 private:
 
-  // declare any subscriber / publisher / timer
+  // declare any subscriber / publisher / timer / member variables and functions
   
   
 };

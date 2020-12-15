@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<robot name="bb" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:property name="PI" value="3.1415926535897931"/>
+
+<xacro:macro name="robot" params="name radius torso neck">
+    
+<!-- links without visual -->
+<link name="${name}/base_link"/>
+<link name="${name}/scan"/>
+<link name="${name}/roll"/>
+<link name="${name}/neck"/>
+<link name="${name}/torso"/>
+    
+  <joint name="roll" type="revolute">
+    <mimic joint="neck" multiplier="0.5"/>
+      <axis xyz="-1 0 0"/>
+      <limit lower="${-PI/6}" upper="${PI/6}" effort="10" velocity="2"/>
+      <child link="${name}/roll"/>
+      <parent link="${name}/base_link"/>
+  </joint>
+  
+  <joint name="scan" type="fixed">
+    <parent link="${name}/base_link"/>
+    <child link="${name}/scan"/>
+    <origin xyz="0 0 ${radius}"/>
+  </joint>
+    
+  <joint name="wheel" type="continuous">
+    <parent link="${name}/roll"/>
+    <child link="${name}/wheel"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 ${radius}"/>
+  </joint>
+    
+  <joint name="torso" type="revolute">
+      <axis xyz="0 1 0"/>
+      <limit lower="${-PI/4}" upper="${PI/4}" effort="10" velocity="2"/>
+      <child link="${name}/torso"/>
+      <parent link="${name}/roll"/>
+    <origin xyz="0 0 ${radius}"/>
+  </joint>
+      
+  <joint name="neck" type="revolute">
+    <parent link="${name}/torso"/>
+    <child link="${name}/neck"/>
+    <origin xyz="0 0 ${torso}"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="${-PI/6}" upper="${PI/6}" effort="10" velocity="2"/>
+  </joint>
+  
+  <joint name="head" type="fixed">
+  <parent link="${name}/neck"/>
+    <child link="${name}/head"/>
+    <origin xyz="0 0 ${neck}"/>
+</joint>
+</xacro:macro>
+
+</robot>

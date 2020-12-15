@@ -38,20 +38,28 @@ public:
       
         // init timer - the function will be called with the given rate
         publish_timer = create_wall_timer(100ms,    // rate
-                                          [&]() 
-                                          {publisher->publish(pose);})
+                                          [&](){duplicateArm();})
     }   
   
 private:
     // declare any subscriber / publisher / timer
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscriber;
     geometry_msgs::msg::Twist last_twist;
-    
-    
+
     rclcpp::Publisher<geometry_msgs::msg::Pose2D>::SharedPtr publisher;
     geometry_msgs::msg::Pose2D pose;
     
     rclcpp::TimerBase::SharedPtr publish_timer;    
+    
+    
+    void duplicateArm()
+    {
+        // use last_msg to build and publish command
+
+        
+        
+    }
+    
 };
 
 // register this plugin
