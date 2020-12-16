@@ -192,7 +192,6 @@ In \texttt{bb8\_amcl\_launch.py}, the AMCL node in run through a life cycle mana
 \begin{pythoncodelarge}
 nav_nodes = [('nav2_controller','controller_server'), 
         ('nav2_planner','planner_server'),
-        ('nav2_recoveries','recoveries_server'),
         ('nav2_bt_navigator','bt_navigator'),
         ]
 for pkg,executable in nav_nodes:
@@ -244,6 +243,10 @@ Parameters that need to be rewritten are:
 # robot radius depends on the robot type
 robot_rad = sl.py_eval("'", robot_type, "'=='bb' and .27 or .16")
 \end{pythoncodelarge}
+\item The Behavior Tree file, that is usually found in the \texttt{nav2\_bt\_navigator} package. Use this syntax to pass it to the rewritten params:
+\begin{pythoncode}
+ 'default_bt_xml_filename': sl.find('nav2_bt_navigator','navigate_w_replanning_time.xml')   # or another file
+\end{pythoncode}
 \end{itemize}
 
 \subsection{Playing with navigation}
