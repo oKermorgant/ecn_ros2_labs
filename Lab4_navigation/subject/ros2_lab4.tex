@@ -154,6 +154,8 @@ Copy/paste the \texttt{bb8\_amcl\_launch.py} file to a new \texttt{spawn\_launch
  \item It runs the \texttt{vel2joints} node with a parameter \texttt{static\_tf} set to True. 
 \end{itemize}
 
+Install this file by compiling the package again (it is the last time!).\\
+
 The type of a robot can be deduced at run-time with the following lines in the launch file:
 \begin{pythoncodelarge}
 robot = sl.arg('robot')
@@ -169,7 +171,7 @@ sl.robot_state_publisher('lab4_navigation',
 
 \subsection{Allowing for manual control}
 
-Create a new argument called e.g. \texttt{use\_nav} with default value False \\
+Create a new argument called e.g. \texttt{use\_nav} with default value False. \\
 
 A first conditionnal block is to run the slider publisher only if this parameter is indeed False. This is done with the following syntax:
 \begin{pythoncodelarge}

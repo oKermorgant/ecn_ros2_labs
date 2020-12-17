@@ -71,7 +71,7 @@ class Vel2Joints(Node):
             req.x = 13.1
             req.y = 14.
             req.theta = 2.7
-            req.laser_color = [230,255,0]
+            req.laser_color = [0,200,0]
         else:   # d9
             req.x = 2.3
             req.y = -7.7
