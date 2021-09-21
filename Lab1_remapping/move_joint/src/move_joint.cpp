@@ -38,9 +38,9 @@ public:
     RCLCPP_INFO(get_logger(), "move_joint running for " + cmd.names[0]);
 
     setpoint_sub = create_subscription<example_interfaces::msg::Float32>(
-          "joint_setpoint",    // which topic
-          10,         // QoS
-          [this](example_interfaces::msg::Float32::UniquePtr msg){spCallback(msg->data);});
+                     "joint_setpoint",    // which topic
+                     10,         // QoS
+                     [this](example_interfaces::msg::Float32::UniquePtr msg){spCallback(msg->data);});
 
     // get limb to publish on the good side
     std::string out_topic = "/robot/limb/left/joint_command";
@@ -48,23 +48,28 @@ public:
       out_topic = "/robot/limb/right/joint_command";
 
     cmd_publisher = create_publisher<baxter_core_msgs::msg::JointCommand>(out_topic, 10);
-}
+  }
+
+  inline bool validName() const
+  {
+    return setpoint_sub.get();
+  }
 
 private:
-// key topic
-rclcpp::Subscription<example_interfaces::msg::Float32>::SharedPtr setpoint_sub;
+  // key topic
+  rclcpp::Subscription<example_interfaces::msg::Float32>::SharedPtr setpoint_sub;
 
-void spCallback(float sp)
-{
-  if(!cmd.command.size())
-    return;
-  cmd.command[0] = sp;
-  cmd_publisher->publish(cmd);
-}
+  void spCallback(float sp)
+  {
+    if(!cmd.command.size())
+      return;
+    cmd.command[0] = sp;
+    cmd_publisher->publish(cmd);
+  }
 
-// joint command
-rclcpp::Publisher<baxter_core_msgs::msg::JointCommand>::SharedPtr cmd_publisher;
-baxter_core_msgs::msg::JointCommand cmd;
+  // joint command
+  rclcpp::Publisher<baxter_core_msgs::msg::JointCommand>::SharedPtr cmd_publisher;
+  baxter_core_msgs::msg::JointCommand cmd;
 
 };
 
@@ -72,7 +77,13 @@ baxter_core_msgs::msg::JointCommand cmd;
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<MoveJoint>());
-  rclcpp::shutdown();
+
+  auto node{std::make_shared<MoveJoint>()};
+
+  if(node->valid())
+  {
+    rclcpp::spin(node);
+    rclcpp::shutdown();
+  }
   return 0;
 }
