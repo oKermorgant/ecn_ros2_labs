@@ -80,7 +80,7 @@ int main(int argc, char * argv[])
 
   auto node{std::make_shared<MoveJoint>()};
 
-  if(node->valid())
+  if(node->validName())
   {
     rclcpp::spin(node);
     rclcpp::shutdown();
