@@ -59,11 +59,9 @@ private:
 // boilerplate main function
 
 int main(int argc, char** argv)
-{
+{   
   rclcpp::init(argc, argv);
-  rclcpp::NodeOptions options;
-  rclcpp::spin(std::make_shared<lab2_mirror::MirrorNode>(options));
+  rclcpp::spin(std::make_shared<lab2_mirror::MirrorNode>(rclcpp::NodeOptions{}));
   rclcpp::shutdown();
   return 0;
 }
-
