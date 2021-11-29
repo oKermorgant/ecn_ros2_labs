@@ -25,7 +25,18 @@ ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually
 
 Each time a package is compiled, the corresponding command (ros1ws / ros2ws) should be run in order to refresh the package list.
 
-\subsection{Running the simulation (already installed)}
+\subsection{Bring up Baxter}
+
+\subsubsection{On the real robot}
+
+If you are in P-Robotics room, you can do the lab on the real robot. You have to run the bridge in a ROS 1 terminal, then you can work on ROS 2.
+
+\begin{bashcodelarge}
+ source ~/ros/baxter.sh # so that your ROSMASTER is on Baxter
+ rosrun baxter_simple_sim ros2_bridge.py
+\end{bashcodelarge}
+
+\subsubsection{In simulation (including virtual machine users)}
 
 The Baxter simulator behaves as the actual Baxter, meaning that it works on ROS 1. A ROS 1 / ROS 2 bridge is used to forward messages between the two protocols.
 The simulation should be run from a ROS 1 terminal with:

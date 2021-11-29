@@ -25,4 +25,7 @@ install(TARGETS puppet_node
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
   
+install(DIRECTORY launch 
+  DESTINATION share/${PROJECT_NAME}) 
+  
 ament_package()

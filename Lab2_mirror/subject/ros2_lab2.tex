@@ -16,10 +16,23 @@ Program a node that can move the left arm of the Baxter robot in a symmetric way
 the motion of the right arm (symmetry with respect to the sagittal plane of the robot).
 The node should work in position mode. \\
 
+\subsection{On the real robot}
+
+If you are in P-Robotics room, you can do the lab on the real robot. You have to run the bridge in a ROS 1 terminal, then you can work on ROS 2.
+
+\begin{bashcodelarge}
+ source ~/ros/baxter.sh # so that your ROSMASTER is on Baxter
+ rosrun baxter_simple_sim ros2_bridge.py
+\end{bashcodelarge}
+
+You can move Baxter's right arm by grabbing the wrist.
+
+\subsection{In simulation (including virtual machine users)}
 The simulation should be started in a ROS 1 console with:
 \begin{bashcodelarge}
  roslaunch baxter_simple_sim simulation.launch lab:=mirror
 \end{bashcodelarge}
+You can then use only ROS 2 terminals.
 
 
 \section{ROS concepts}

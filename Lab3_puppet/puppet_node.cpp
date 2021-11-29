@@ -7,7 +7,6 @@
 #include <baxter_core_msgs/msg/joint_command.hpp>
 #include <baxter_core_msgs/srv/solve_position_ik.hpp>
 #include <algorithm>
-#include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer_client.h>
 #include "ik_client.h"
@@ -23,7 +22,7 @@ class PuppetNode : public rclcpp::Node
 {
 public:
   PuppetNode(rclcpp::NodeOptions options)
-    : Node("puppet", options), ik_node("ik_node"), tf_buffer(get_clock()), tf_listener(tf_buffer), tf_static_br(*this)
+    : Node("puppet", options), ik_node("ik_node"), tf_buffer(get_clock()), tf_listener(tf_buffer)
   {
     // init whatever is needed for your node
 
@@ -36,16 +35,6 @@ public:
     // IK service wrapper into IKNode
     ik_node.init("/ExternalTools/left/PositionKinematicsNode/IKService");
 
-    // static broadcast from c++ (should / could be done from independent node)
-    // Commend this section once you add the static_transform_publisher node in a launch file
-    geometry_msgs::msg::TransformStamped offset;
-    offset.header.set__stamp(now());
-    offset.header.frame_id = "right_gripper";
-    offset.child_frame_id = "left_gripper_desired";
-    offset.transform.translation.z = 0.1;
-    offset.transform.rotation.y = 1;
-    offset.transform.rotation.w = 0;
-    tf_static_br.sendTransform(offset);
   }
   
 private:
@@ -57,7 +46,6 @@ private:
   // TF 2 stuff
   tf2_ros::Buffer tf_buffer;
   tf2_ros::TransformListener tf_listener;
-  tf2_ros::StaticTransformBroadcaster tf_static_br;
 
   void publishCommand()
   {
