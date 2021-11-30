@@ -159,7 +159,7 @@ Install this file by compiling the package again (it is the last time!).\\
 The type of a robot can be deduced at run-time with the following lines in the launch file:
 \begin{pythoncodelarge}
 robot = sl.arg('robot')
-robot_type = sl.py_eval("''.join(c for c in '", robot, "' if not c.isdigit())") 
+robot_type = sl.py_eval("''.join(c for c in '", robot, "' if c.isalpha())") 
 \end{pythoncodelarge}\texttt{robot\_type} will be either \texttt{'bb'} or \texttt{'d'}. In practice, it runs a bit of Python code to extract the non-digital characters of the robot name: \texttt{'bb8'} thus becomes \texttt{'bb'}, and so on.\\
 
 The corresponding model can be loaded accordingly:

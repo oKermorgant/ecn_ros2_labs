@@ -10,6 +10,6 @@ def generate_launch_description():
     
     # run RViz2
     rviz_config_file = sl.find('lab4_navigation', 'config.rviz')
-    sl.node('rviz2','rviz2', output='log', arguments=['-d', rviz_config_file])
+    sl.node('rviz2','rviz2', output='log', arguments=['-d', rviz_config_file], respawn=True)
     
     return sl.launch_description()
