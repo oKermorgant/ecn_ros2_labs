@@ -40,14 +40,12 @@ public:
     // init subscriber
 
     // init publisher
-
-    // init timer - the passed function will be called with the given rate
     
   }
   
 private:
 
-  // declare any subscriber / publisher / timer / member variables and functions
+  // declare any subscriber / publisher / member variables and functions
   
   
 };

@@ -12,7 +12,7 @@
 
 \section{Goals}
 
-In this lab we will see the main tools to analyze nodes and topics. A ROS 2 package will be used to move Baxter in a simulation environment.
+In this lab we will see the main tools to analyze nodes and topics.
 
 \subsection{Using the terminals}
 
@@ -23,30 +23,53 @@ ros1ws  # type this to configure the terminal for ROS 1 (default)
 ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually)
 \end{bashcodelarge}
 
+You can change the default behavior by updating the ros1ws line of your \texttt{.bashrc} file.
+
 Each time a package is compiled, the corresponding command (ros1ws / ros2ws) should be run in order to refresh the package list.
 
 \subsection{Bring up Baxter}
 
+Even if you have a real Baxter robot it can be a good idea to test the lab in simulation first.
+In both cases, we want to have a RViz display, which is mandatory in simulation and quite handy on the real robot. RViz is run automatically in both cases.
+
 \subsubsection{On the real robot}
 
-If you are in P-Robotics room, you can do the lab on the real robot. You have to run the bridge in a ROS 1 terminal, then you can work on ROS 2.
+Baxter is a ROS1-based robot. To work with ROS 2 we thus have to run a bridge that transforms all or some topics between ROS 1 and ROS 2.
 
+A launch file is available in the \texttt{baxter\_bridge} package to run both the bridge and RViz.
+
+You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
- source ~/ros/baxter.sh # so that your ROSMASTER is on Baxter
- rosrun baxter_simple_sim ros2_bridge.py
+ ros2ws
+ source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ ros2 launch baxter_bridge baxter_bridge_launch.py
+\end{bashcodelarge}
+
+In you are in a lab on the real Baxter, remind the lab assistant to allow multiple publishers for this lab.
+It can be done from a ROS 1 terminal:
+\begin{bashcodelarge}
+ ros1ws
+ source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ rosparam set allow_multiple true
 \end{bashcodelarge}
 
 \subsubsection{In simulation (including virtual machine users)}
 
-The Baxter simulator behaves as the actual Baxter, meaning that it works on ROS 1. A ROS 1 / ROS 2 bridge is used to forward messages between the two protocols.
-The simulation should be run from a ROS 1 terminal with:
-\begin{bashcodelarge}
-roslaunch baxter_simple_sim simulation.launch
-\end{bashcodelarge}
+The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with a very limited part of the same topics and services. 
 
-It will display RViz with a few in/out topics that can be listed through:
+The \texttt{baxter\_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
-rostopic list (ROS 1)
+ros2ws
+ros2 launch baxter_simple_sim sim_launch.py
+\end{bashcodelarge}
+The launch file also runs RViz.
+
+\subsection{Initial state}
+
+Whether in simulation or on the robot, Baxter is not moving and is waiting for commands on any arm.\\
+A few in/out topics exist and can be listed through:
+\begin{bashcodelarge}
+rostopic list (ROS 1, if on the real robot)
 ros2 topic list (ROS 2)
 \end{bashcodelarge}
 
@@ -56,7 +79,7 @@ The folder should be put in your ROS 2 workspace (\texttt{\texttilde/ros2/src}).
 \begin{bashcodelarge}
  ros2ws
  cd ~/ros2
- colbuild
+ colbuild --packages-select move_joint
 \end{bashcodelarge}
 
 \section{Running the control nodes}

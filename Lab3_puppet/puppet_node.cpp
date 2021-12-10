@@ -22,7 +22,7 @@ class PuppetNode : public rclcpp::Node
 {
 public:
   PuppetNode(rclcpp::NodeOptions options)
-    : Node("puppet", options), ik_node("ik_node"), tf_buffer(get_clock()), tf_listener(tf_buffer)
+    : Node("puppet", options), tf_buffer(get_clock()), tf_listener(tf_buffer)
   {
     // init whatever is needed for your node
 
@@ -33,8 +33,7 @@ public:
     // init timer - the function publishCommand() should called with the given rate
 
     // IK service wrapper into IKNode
-    ik_node.init("/ExternalTools/left/PositionKinematicsNode/IKService");
-
+    ik_node.init("ik_node","/ExternalTools/left/PositionKinematicsNode/IKService");
   }
   
 private:
@@ -44,8 +43,8 @@ private:
   ServiceNodeSync<SolvePositionIK> ik_node;
 
   // TF 2 stuff
-  tf2_ros::Buffer tf_buffer;
-  tf2_ros::TransformListener tf_listener;
+  tf2_ros::Buffer tf_buffer;                // stores all previous elementary transforms in a tree
+  tf2_ros::TransformListener tf_listener;   // subscribes to /tf
 
   void publishCommand()
   {
@@ -53,15 +52,25 @@ private:
     if(tf_buffer.canTransform("left_gripper_desired", "base", tf2::TimePointZero, tf2::durationFromSec(1.0)))
     {
       // get this transform with tf_buffer.lookupTransform("base", "left_gripper_desired", ...
-        
 
-        // build service request SolvePositionIK::Request from obtained transform
-        SolvePositionIK::Request req;
 
-        // call service and get response
-      auto response = ik_node.sendRequest(req);
+      // build service request SolvePositionIK::Request from obtained transform
+      SolvePositionIK::Request req;
 
-      // copy response data to joint command and publish
+
+
+
+
+
+      // call service and get response
+      if(SolvePositionIK::Response res; ik_node.call(req, res))
+      {
+        // call to IK was successfull, check if the solution is valid
+
+        // copy response data to joint command and publish to left arm
+
+
+      }
     }
   }
 };

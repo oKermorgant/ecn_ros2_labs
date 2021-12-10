@@ -16,24 +16,47 @@ Program a node that can move the left arm of the Baxter robot in a symmetric way
 the motion of the right arm (symmetry with respect to the sagittal plane of the robot).
 The node should work in position mode. \\
 
-\subsection{On the real robot}
+\subsection{Bring up Baxter}
 
-If you are in P-Robotics room, you can do the lab on the real robot. You have to run the bridge in a ROS 1 terminal, then you can work on ROS 2.
+Even if you have a real Baxter robot it can be a good idea to test the lab in simulation first.
+In both cases, we want to have a RViz display, which is mandatory in simulation and quite handy on the real robot. RViz is run automatically in both cases.
 
+\subsubsection{On the real robot}
+
+Baxter is a ROS1-based robot. To work with ROS 2 we thus have to run a bridge that transforms all or some topics between ROS 1 and ROS 2.
+
+A launch file is available in the \texttt{baxter\_bridge} package to run both the bridge and RViz.
+
+You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
- source ~/ros/baxter.sh # so that your ROSMASTER is on Baxter
- rosrun baxter_simple_sim ros2_bridge.py
+ ros2ws
+ source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ ros2 launch baxter_bridge baxter_bridge_launch.py
 \end{bashcodelarge}
 
-You can move Baxter's right arm by grabbing the wrist.
+\subsubsection{In simulation (including virtual machine users)}
 
-\subsection{In simulation (including virtual machine users)}
-The simulation should be started in a ROS 1 console with:
+The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with a very limited part of the same topics and services. 
+
+The \texttt{baxter\_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
- roslaunch baxter_simple_sim simulation.launch lab:=mirror
+ros2ws
+ros2 launch baxter_simple_sim sim_launch.py lab:=mirror
 \end{bashcodelarge}
-You can then use only ROS 2 terminals.
+The last argument makes the right arm move with a pre-computer motion, as we cannot move it manually.
 
+\subsection{Initial state}
+
+The right arm of the robot can be manually moved by grabbing the wrist, or has a pre-computed motion (in simulation). 
+It is waiting for any command for the left arm.\\
+
+On the real robot of course, only one group can run their code at a time. This is ensured by the \texttt{baxter\_bridge} that only republished command topics if no other computer has just published on the same topic. Thus, it may be interesting to test your code in the simulation first.
+
+A few in/out topics exist and can be listed through:
+\begin{bashcodelarge}
+rostopic list (ROS 1)
+ros2 topic list (ROS 2)
+\end{bashcodelarge}
 
 \section{ROS concepts}
 
@@ -45,7 +68,7 @@ value of the other arm.
 
 \begin{itemize}
 \item Identify the topics that the node should subscribe and publish to: names, message type
-\item Check the online documentation ``ROS 2 C++ topics'' to get the overall syntax. This work requires at least a publisher, a subscriber and a timer
+\item Check the online documentation ``ROS 2 C++ topics'' to get the overall syntax. This work requires at least a publisher and a subscriber. A timer can also be used to control at which rate you control the arm.
 \item Program the node in C++ (and then in Python3 if you feel like it)
 \end{itemize}
 
