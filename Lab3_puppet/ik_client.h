@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
-#include <tf2_ros/buffer_client.h>
+#include <tf2_ros/buffer.h>
 
 using namespace std::chrono_literals;
 using baxter_core_msgs::srv::SolvePositionIK;
@@ -39,12 +39,12 @@ public:
 
     if(!client->wait_for_service(timeout))
     {
-      RCLCPP_WARN(node->get_logger(), "Service " + service + " is not reachable");
+      RCLCPP_WARN(node->get_logger(), "Service %s is not reachable", service.c_str());
       // try to reconnect
       client = node->create_client<ServiceT>(service);
       if(!client->wait_for_service(timeout))
         return false;
-      RCLCPP_INFO(node->get_logger(), "Reconnected to " + service);
+      RCLCPP_INFO(node->get_logger(), (std::string("Reconnected to ") + service).c_str());
     }
 
     auto result = client->async_send_request(req_ptr);

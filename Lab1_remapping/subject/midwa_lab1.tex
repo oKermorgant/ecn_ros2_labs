@@ -23,7 +23,7 @@ ros1ws  # type this to configure the terminal for ROS 1 (default)
 ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually)
 \end{bashcodelarge}
 
-You can change the default behavior by updating the ros1ws line of your \texttt{.bashrc} file.
+You can change the default behavior by updating the ros1ws line of your \okttt{.bashrc} file.
 
 Each time a package is compiled, the corresponding command (ros1ws / ros2ws) should be run in order to refresh the package list.
 
@@ -36,7 +36,7 @@ In both cases, we want to have a RViz display, which is mandatory in simulation 
 
 Baxter is a ROS1-based robot. To work with ROS 2 we thus have to run a bridge that transforms all or some topics between ROS 1 and ROS 2.
 
-A launch file is available in the \texttt{baxter\_bridge} package to run both the bridge and RViz.
+A launch file is available in the \okttt{baxter_bridge} package to run both the bridge and RViz.
 
 You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
@@ -57,7 +57,7 @@ It can be done from a ROS 1 terminal:
 
 The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with a very limited part of the same topics and services. 
 
-The \texttt{baxter\_bridge} node should be run from a ROS 2 terminal:
+The \okttt{baxter_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
 ros2ws
 ros2 launch baxter_simple_sim sim_launch.py
@@ -75,7 +75,7 @@ ros2 topic list (ROS 2)
 
 \subsection{Compiling the package}
 
-The folder should be put in your ROS 2 workspace (\texttt{\texttilde/ros2/src}). Compilation is done by calling colcon from the root of the workspace:
+The folder should be put in your ROS 2 workspace (\okttt{\~/ros2/src}). Compilation is done by calling colcon from the root of the workspace:
 \begin{bashcodelarge}
  ros2ws
  cd ~/ros2
@@ -89,46 +89,46 @@ A basic control GUI can be run with:
 \begin{bashcodelarge}
  ros2 launch move_joint slider_launch.py
 \end{bashcodelarge}
-It runs a node that sends the slider value on a topic (here \texttt{setpoint}).\\
+It runs a node that sends the slider value on a topic (here \okttt{setpoint}).\\
 
 The Baxter robot has $2\times 7$ joints as shown in \Fig{baxter}, the names of which are listed in the table.
 \begin{figure}[h]\centering
  \includegraphics[width=.3\linewidth]{baxter} \\
   \begin{tabular}{|c|c|c|c|c|c|c|c|}
   \hline
-  joints (\texttt{left\_} \& \texttt{right\_})& \texttt{s0} & \texttt{s1}& \texttt{e0} & \texttt{e1} & \texttt{w0} & \texttt{w1} & \texttt{w2} \\\hline
+  joints (\okttt{left_} \& \okttt{right_})& \okttt{s0} & \okttt{s1}& \okttt{e0} & \okttt{e1} & \okttt{w0} & \okttt{w1} & \okttt{w2} \\\hline
  \end{tabular}
  \caption{Baxter joints}
  \label{baxter}
 \end{figure}
 
-A special node called \texttt{move\_joint} should be used to change the value published by the slider GUI, to the setpoint of a particular joint:
+A special node called \okttt{move_joint} should be used to change the value published by the slider GUI, to the setpoint of a particular joint:
 \begin{bashcodelarge}
  ros2 run move_joint move_joint
 \end{bashcodelarge}
 
 \subsection{Initial state of the control nodes}
 
-Use \texttt{ros2 node} and \texttt{ros2 topic} to get the information on the nodes. There are currently two limitations:
+Use \okttt{ros2 node} and \okttt{ros2 topic} to get the information on the nodes. There are currently two limitations:
 \begin{itemize}
- \item The \texttt{move\_joint} node needs a parameter to tell which joint it should be controlling
- \item The slider publishes on \texttt{setpoint} while the  \texttt{move\_joint} node listens to \texttt{joint\_setpoint}
+ \item The \okttt{move_joint} node needs a parameter to tell which joint it should be controlling
+ \item The slider publishes on \okttt{setpoint} while the  \okttt{move_joint} node listens to \okttt{joint_setpoint}
 \end{itemize}
 Additionally, it would be nice to run the two nodes in the same lauch file.
 
 \subsection{Regroup all nodes in the same launch file}
 
-Open the \texttt{slider\_launch.py} and add a line equivalent to calling \texttt{ros2 run move\_joint move\_joint}.\\
-Then, add a parameter to tell which joint should be controlled:\\\texttt{parameters = \{'joint\_name': 'right\_e0'\}}\\
+Open the \okttt{slider_launch.py} and add a line equivalent to calling \okttt{ros2 run move_joint move_joint}.\\
+Then, add a parameter to tell which joint should be controlled:\\\okttt{parameters = \{'joint_name': 'right_e0'\}}\\
 
-To run this launch file, you can go to its folder and type \texttt{ros2 launch ./slider\_launch.py}.\\
-Display the graph (\texttt{rqt\_graph}) to detect that the slider node and \texttt{move\_joint} do not communicate, because they do not use the same topics.
+To run this launch file, you can go to its folder and type \okttt{ros2 launch ./slider_launch.py}.\\
+Display the graph (\okttt{rqt_graph}) to detect that the slider node and \okttt{move_joint} do not communicate, because they do not use the same topics.
 
 \subsection{Remapping}
 
-In this section we will remap the topic name of \texttt{move\_joint} such that is uses \texttt{setpoint} instead of \texttt{joint\_setpoint}.\\
+In this section we will remap the topic name of \okttt{move_joint} such that is uses \okttt{setpoint} instead of \okttt{joint_setpoint}.\\
 
-Modify the launch file by adding this argument to the \texttt{move\_joint} node:
+Modify the launch file by adding this argument to the \okttt{move_joint} node:
 
 \begin{pythoncodelarge}
 remappings = {'joint_setpoint': 'setpoint'}.items()
@@ -143,16 +143,16 @@ Now that a launch file exists to control 1 joint from a slider, we will change t
 \begin{pythoncodelarge}
 sl.declare_arg('name', 'right_e0')
 \end{pythoncodelarge}
-This syntax tells the launch file that is now has a \texttt{name} argument, with default value \texttt{'right\_e0'}.\\
+This syntax tells the launch file that is now has a \okttt{name} argument, with default value \okttt{'right_e0'}.\\
 
-Change the hard-coded value to the argument one \texttt{sl.arg('right\_e0')} and check that the behavior is the same\\
+Change the hard-coded value to the argument one \okttt{sl.arg('right_e0')} and check that the behavior is the same\\
 
 Also, you can rename the slider GUI by giving an additional argument:
 \begin{pythoncodelarge}
 sl.node('slider_publisher', 'slider_publisher', name=sl.arg('name'), ...)
 \end{pythoncodelarge}
 
-Then, run the launch file with another name, for instance:\\ \texttt{ros2 launch ./slider\_launch.py name:=left\_e0}\\
+Then, run the launch file with another name, for instance:\\ \okttt{ros2 launch ./slider_launch.py name:=left_e0}\\
 On another terminal, try to run the same launch file for another joint. What happens?\\
 
 

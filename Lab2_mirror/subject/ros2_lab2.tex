@@ -25,7 +25,7 @@ In both cases, we want to have a RViz display, which is mandatory in simulation 
 
 Baxter is a ROS1-based robot. To work with ROS 2 we thus have to run a bridge that transforms all or some topics between ROS 1 and ROS 2.
 
-A launch file is available in the \texttt{baxter\_bridge} package to run both the bridge and RViz.
+A launch file is available in the \okttt{baxter_bridge} package to run both the bridge and RViz.
 
 You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
@@ -38,7 +38,7 @@ You have to connect to Baxter's ROSMASTER in the terminal where you run the brid
 
 The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with a very limited part of the same topics and services. 
 
-The \texttt{baxter\_bridge} node should be run from a ROS 2 terminal:
+The \okttt{baxter_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
 ros2ws
 ros2 launch baxter_simple_sim sim_launch.py lab:=mirror
@@ -50,7 +50,7 @@ The last argument makes the right arm move with a pre-computer motion, as we can
 The right arm of the robot can be manually moved by grabbing the wrist, or has a pre-computed motion (in simulation). 
 It is waiting for any command for the left arm.\\
 
-On the real robot of course, only one group can run their code at a time. This is ensured by the \texttt{baxter\_bridge} that only republished command topics if no other computer has just published on the same topic. Thus, it may be interesting to test your code in the simulation first.
+On the real robot of course, only one group can run their code at a time. This is ensured by the \okttt{baxter_bridge} that only republished command topics if no other computer has just published on the same topic. Thus, it may be interesting to test your code in the simulation first.
 
 A few in/out topics exist and can be listed through:
 \begin{bashcodelarge}
@@ -72,6 +72,6 @@ value of the other arm.
 \item Program the node in C++ (and then in Python3 if you feel like it)
 \end{itemize}
 
-The package is already created for this lab (\texttt{lab2\_mirror}), you just have to update the C++ file and compile it.\\
+The package is already created for this lab (\okttt{lab2_mirror}), you just have to update the C++ file and compile it.\\
 Feel free to keep this package as a template for future packages / nodes that you will create.
 \end{document}

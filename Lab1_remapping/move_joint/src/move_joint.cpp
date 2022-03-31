@@ -31,11 +31,11 @@ public:
 
     if(std::find(known_joints.begin(), known_joints.end(), cmd.names[0]) == known_joints.end())
     {
-      RCLCPP_INFO(get_logger(), "you have to specify a known joint name: was '" + cmd.names[0] + "'");
+      RCLCPP_INFO(get_logger(), "you have to specify a known joint name: was '%s'", cmd.names[0].c_str());
       return;
     }
 
-    RCLCPP_INFO(get_logger(), "move_joint running for " + cmd.names[0]);
+    RCLCPP_INFO(get_logger(), "move_joint running for %s", + cmd.names[0].c_str());
 
     setpoint_sub = create_subscription<example_interfaces::msg::Float32>(
                      "joint_setpoint",    // which topic

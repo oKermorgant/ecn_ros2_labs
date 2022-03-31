@@ -24,7 +24,7 @@ In both cases, we want to have a RViz display, which is mandatory in simulation 
 
 Baxter is a ROS1-based robot. To work with ROS 2 we thus have to run a bridge that transforms all or some topics between ROS 1 and ROS 2.
 
-A launch file is available in the \texttt{baxter\_bridge} package to run both the bridge and RViz.
+A launch file is available in the \okttt{baxter_bridge} package to run both the bridge and RViz.
 
 You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
@@ -37,7 +37,7 @@ You have to connect to Baxter's ROSMASTER in the terminal where you run the brid
 
 The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with a very limited part of the same topics and services. 
 
-The \texttt{baxter\_bridge} node should be run from a ROS 2 terminal:
+The \okttt{baxter_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
 ros2ws
 ros2 launch baxter_simple_sim sim_launch.py lab:=puppet
@@ -49,7 +49,7 @@ The last argument makes the right arm move with a pre-computer motion, as we can
 The right arm of the robot can be manually moved by grabbing the wrist, or has a pre-computed motion (in simulation). 
 It is waiting for any command for the left arm.\\
 
-On the real robot of course, only one group can run their code at a time. This is ensured by the \texttt{baxter\_bridge} that only republished command topics if no other computer has just published on the same topic. Thus, it may be interesting to test your code in the simulation first.
+On the real robot of course, only one group can run their code at a time. This is ensured by the \okttt{baxter_bridge} that only republished command topics if no other computer has just published on the same topic. Thus, it may be interesting to test your code in the simulation first.
 
 A few in/out topics exist and can be listed through:
 \begin{bashcodelarge}
@@ -66,38 +66,38 @@ In order to control the left arm, you need to publish a command message on the s
 
 \subsection{Using TF}
 
-In ROS, the \texttt{/tf} topic conveys many 3D transforms between frames, forming a tree. A TF listener can be instantiated in a node in order to retrieve any transform between two frames. \\
+In ROS, the \okttt{/tf} topic conveys many 3D transforms between frames, forming a tree. A TF listener can be instantiated in a node in order to retrieve any transform between two frames. \\
 
-For \texttt{/tf} to get all the transforms for Baxter, a \texttt{robot\_state\_publisher} must be run. It is a standard node that:
+For \okttt{/tf} to get all the transforms for Baxter, a \okttt{robot_state_publisher} must be run. It is a standard node that:
 \begin{itemize}
  \item loads the description of a robot (URDF file)
  \item subscribes to the joint states topic
  \item publishes all induced 3D transforms with the direct geometric model
 \end{itemize}
-In this lab, Baxter's \texttt{robot\_state\_publisher} is embedded either in the simulator or in the bridge and automatically subscribes to the joint states.
+In this lab, Baxter's \okttt{robot_state_publisher} is embedded either in the simulator or in the bridge and automatically subscribes to the joint states.
 
 \subsection{Adding a new frame}
 
-The desired pose of the left gripper will be defined as a new frame, relative to the right gripper and called \texttt{'left\_gripper\_desired'}.\\
-The node \texttt{static\_transform\_publisher} from the \texttt{tf2\_ros} package is designed to publish this kind of arbitrary fixed transform between frames:
+The desired pose of the left gripper will be defined as a new frame, relative to the right gripper and called \okttt{'left_gripper_desired'}.\\
+The node \okttt{static_transform_publisher} from the \okttt{tf2_ros} package is designed to publish this kind of arbitrary fixed transform between frames:
 \begin{bashcodelarge}
  ros2 run tf2_ros static_transform_publisher x y z yaw pitch roll frame_id child_frame_id
 \end{bashcodelarge}where:
 \begin{itemize}
-\item \texttt{frame\_id} is the reference frame (here \texttt{right\_gripper})
-\item \texttt{child\_frame\_id} is the target frame (here \texttt{left\_gripper\_desired})
- \item \texttt{x y z yaw pitch roll} is the 3D transform (here \texttt{0 0 0.1 0 3.14 0})
+\item \okttt{frame_id} is the reference frame (here \okttt{right_gripper})
+\item \okttt{child_frame_id} is the target frame (here \okttt{left_gripper_desired})
+ \item \okttt{x y z yaw pitch roll} is the 3D transform (here \okttt{0 0 0.1 0 3.14 0})
 \end{itemize}
 
 \subsection{Putting all together}
 
 A single launch file should be written in order to regroup the previous commands:
 \begin{itemize}
- \item run the node \texttt{static\_transform\_publisher} with the correct arguments
- \item include the launch file \texttt{robot\_state\_publisher\_launch.py} from the \texttt{baxter\_description} package
+ \item run the node \okttt{static_transform_publisher} with the correct arguments
+ \item include the launch file \okttt{robot_state_publisher_launch.py} from the \okttt{baxter_description} package
  \end{itemize}
  
- With the simulation and your launch file running, check that you can indeed retrieve the current 3D transform between the frames \texttt{base} and \texttt{left\_gripper\_desired}:
+ With the simulation and your launch file running, check that you can indeed retrieve the current 3D transform between the frames \okttt{base} and \okttt{left_gripper_desired}:
  \begin{bashcodelarge}
  ros2 run tf2_ros tf2_echo base left_gripper_desired
 \end{bashcodelarge}
@@ -111,6 +111,6 @@ A single launch file should be written in order to regroup the previous commands
 \item Program the node in C++ (and then in Python3 if you feel like it)
 \end{itemize}
 
-The package is already created for this lab (\texttt{lab3\_puppet}), you just have to update the C++ file and compile it.\\
+The package is already created for this lab (\okttt{lab3_puppet}), you just have to update the C++ file and compile it.\\
 Feel free to keep this package as a template for future packages / nodes that you will create.
 \end{document}

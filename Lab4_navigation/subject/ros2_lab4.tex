@@ -74,7 +74,7 @@ Here, the map was built by running a Turtlebot robot on the 4th floor of Buildin
 
 \subsection{Compiling and running the simulation}
 
-The package should be compiled by \texttt{colcon} to have the files discoverable by ROS 2:
+The package should be compiled by \okttt{colcon} to have the files discoverable by ROS 2:
 \begin{bashcodelarge}
  ros2ws
  cd ~/ros2
@@ -86,8 +86,8 @@ In this lab, the map is also used as a simulated environment. Simulated robots c
  ros2 launch lab4_navigation simulation_launch.py 
 \end{bashcodelarge}This will create two windows:
 \begin{itemize}
- \item \texttt{Simulator 2D} which is the actual simulation (without any robot for now)
- \item \texttt{Rviz2} which is the main visualization GUI in ROS.
+ \item \okttt{Simulator 2D} which is the actual simulation (without any robot for now)
+ \item \okttt{Rviz2} which is the main visualization GUI in ROS.
 \end{itemize}
 The windows can be kept alive during the whole lab.
 
@@ -101,7 +101,7 @@ In the first step, pure localization will be considered with manual control. Thi
 \end{bashcodelarge}
 The BB8 robot is displayed in the simulation (true pose) and in RViz (estimated pose).\\
 
-For this initial run, things should not go as planned. Identify which topics AMCL subscribes to, versus which topics should be used instead. These topics (and frames of interest) are defined in the file \texttt{urdf/amcl\_param.yaml} that sets a number of ROS parameters for AMCL. \\Change their names either here, or using remappings in \texttt{bb8\_amcl\_launch.py}. 
+For this initial run, things should not go as planned. Identify which topics AMCL subscribes to, versus which topics should be used instead. These topics (and frames of interest) are defined in the file \okttt{urdf/amcl_param.yaml} that sets a number of ROS parameters for AMCL. \\Change their names either here, or using remappings in \okttt{bb8_amcl_launch.py}. 
 
 \subsection{AMCL}
 
@@ -111,7 +111,7 @@ From laser readings, some particles are pruned as they are not consistent with t
 
 \subsection{Interaction with RViz}
 
-You can reset the estimation by using the \texttt{2D Pose Estimate} button in RViz. Try giving a completely wrong estimate and check that:
+You can reset the estimation by using the \okttt{2D Pose Estimate} button in RViz. Try giving a completely wrong estimate and check that:
 \begin{itemize}
  \item The simulated robot is still at the same place in the simulation window
  \item Its pose is not the same in RViz, and the laser scans are not aligned with the walls
@@ -126,18 +126,18 @@ AMCL will not be able to tell that the robot position is completely wrong, as th
 
 \subsection{Nodes and frames}
 
-Use \texttt{rqt\_graph} and TF tools (\texttt{tf2\_tools view\_frames.py}) to display the nodes and the frames:
+Use \okttt{rqt_graph} and TF tools (\okttt{tf2_tools view_frames.py}) to display the nodes and the frames:
 \begin{itemize}
  \item Which frames are linked to the robot, to the map, in-between?
  \item Which node publishes each frame transform?
  \item Especially, what do the following transforms correspond to and which nodes are responsible for them:
- \texttt{map} $\rightarrow$ \texttt{bb8/odom} $\rightarrow$ \texttt{bb8/base\_link}.
+ \okttt{map} $\rightarrow$ \okttt{bb8/odom} $\rightarrow$ \okttt{bb8/base_link}.
 \end{itemize}
 
 \section{Planning and control}
 
 In this part, we will consider a perfect localization. Instead of running AMCL (that can be CPU intensive), a perfect estimation 
-will be published by running the \texttt{vel2joints} node with the parameter \texttt{static\_tf} set to True.
+will be published by running the \okttt{vel2joints} node with the parameter \okttt{static_tf} set to True.
 
 Many nodes have to be run to have full capabilities of the navigation stack, as shown in the following figure:
 \begin{center}
@@ -148,10 +148,10 @@ Many nodes have to be run to have full capabilities of the navigation stack, as 
 
 Four robots are defined in the lab package. There are two BB-type (BB8 / BB9) and two D-type (D0 / D9).\\
 
-Copy/paste the \texttt{bb8\_amcl\_launch.py} file to a new \texttt{spawn\_launch.py} file. Then, update this file such that:
+Copy/paste the \okttt{bb8_amcl_launch.py} file to a new \okttt{spawn_launch.py} file. Then, update this file such that:
 \begin{itemize}
- \item It takes a new argument called \texttt{'robot'} with default value \texttt{'bb8'}.
- \item It runs the \texttt{vel2joints} node with a parameter \texttt{static\_tf} set to True. 
+ \item It takes a new argument called \okttt{'robot'} with default value \okttt{'bb8'}.
+ \item It runs the \okttt{vel2joints} node with a parameter \okttt{static_tf} set to True. 
 \end{itemize}
 
 Install this file by compiling the package again (it is the last time!).\\
@@ -160,18 +160,18 @@ The type of a robot can be deduced at run-time with the following lines in the l
 \begin{pythoncodelarge}
 robot = sl.arg('robot')
 robot_type = sl.py_eval("''.join(c for c in '", robot, "' if c.isalpha())") 
-\end{pythoncodelarge}\texttt{robot\_type} will be either \texttt{'bb'} or \texttt{'d'}. In practice, it runs a bit of Python code to extract the non-digital characters of the robot name: \texttt{'bb8'} thus becomes \texttt{'bb'}, and so on.\\
+\end{pythoncodelarge}\okttt{robot_type} will be either \okttt{'bb'} or \okttt{'d'}. In practice, it runs a bit of Python code to extract the non-digital characters of the robot name: \okttt{'bb8'} thus becomes \okttt{'bb'}, and so on.\\
 
 The corresponding model can be loaded accordingly:
 \begin{pythoncodelarge}
 sl.robot_state_publisher('lab4_navigation', 
                           sl.name_join(robot_type, '.xacro'),
                          'urdf', xacro_args={'name': robot})
-\end{pythoncodelarge}this line will read either \texttt{bb.xacro} or \texttt{d.xacro} depending on the passed \texttt{robot} argument. 
+\end{pythoncodelarge}this line will read either \okttt{bb.xacro} or \okttt{d.xacro} depending on the passed \okttt{robot} argument. 
 
 \subsection{Allowing for manual control}
 
-Create a new argument called e.g. \texttt{use\_nav} with default value False. \\
+Create a new argument called e.g. \okttt{use_nav} with default value False. \\
 
 A first conditionnal block is to run the slider publisher only if this parameter is indeed False. This is done with the following syntax:
 \begin{pythoncodelarge}
@@ -184,13 +184,13 @@ Test that the launch file works properly and that you can run BB8 in a terminal,
 
 \subsection{Running navigation nodes}
 
-If the parameter \texttt{use\_nav} is True, then the slider publisher should be replaced by the navigation nodes. This is done by creating a block under the condition:
+If the parameter \okttt{use_nav} is True, then the slider publisher should be replaced by the navigation nodes. This is done by creating a block under the condition:
 \begin{pythoncodelarge}
 with sl.group(if_arg='use_nav'):
     # many things to do in this case
 \end{pythoncodelarge}
 
-In \texttt{bb8\_amcl\_launch.py}, the AMCL node in run through a life cycle manager. This should be the case for all navigation nodes. This can be done through a loop in the launch file, where each navigation node is identified by its package and its executable:
+In \okttt{bb8_amcl_launch.py}, the AMCL node in run through a life cycle manager. This should be the case for all navigation nodes. This can be done through a loop in the launch file, where each navigation node is identified by its package and its executable:
 \begin{pythoncodelarge}
 nav_nodes = [('nav2_controller','controller_server'), 
         ('nav2_planner','planner_server'),
@@ -201,7 +201,7 @@ for pkg,executable in nav_nodes:
     # add the executable name to some list of nodes to be managed by life cycle manager
 \end{pythoncodelarge}Analyze the syntax used to run a node and add it to the life cycle manager, and run all the navigation nodes.\\
 
-The parameter file that should be used is now \texttt{nav\_param.yaml} instead of \texttt{amcl\_param.yaml}. At this time, you can run:
+The parameter file that should be used is now \okttt{nav_param.yaml} instead of \okttt{amcl_param.yaml}. At this time, you can run:
 \begin{bashcodelarge}
 # runs BB8 with nav capabilities
 ros2 launch lab4_navigation spawn_launch.py use_nav:=True
@@ -212,9 +212,9 @@ ros2 launch lab4_navigation spawn_launch.py robot:=d0
 
 \subsection{Adapting the parameters}
 
-Compare the files \texttt{amcl\_param.yaml} and \texttt{nav\_param.yaml}. The first one explicitely writes that the node is run in the \texttt{bb8} namespace. Also, the frames of interest (\texttt{bb8/odom}, \texttt{bb8/base\_link}) are explicitely given in the parameter file.\\
+Compare the files \okttt{amcl_param.yaml} and \okttt{nav_param.yaml}. The first one explicitely writes that the node is run in the \okttt{bb8} namespace. Also, the frames of interest (\okttt{bb8/odom}, \okttt{bb8/base_link}) are explicitely given in the parameter file.\\
 
-It is not the case for \texttt{nav\_param.yaml}. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
+It is not the case for \okttt{nav_param.yaml}. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
 We will use a launch capability to update the parameters during launch. Do to that, import the following function in the launch file:
 \begin{pythoncodelarge}
 from nav2_common.launch import RewrittenYaml
@@ -222,10 +222,10 @@ from nav2_common.launch import RewrittenYaml
 
 This function takes the following arguments:
 \begin{itemize}
-\item \texttt{source\_file}: the initial parameter file
-\item \texttt{root\_key}: any namespace to be used (in our case: the robot variable)
-\item \texttt{param\_rewrites}: a dictionary of parameters names with their new value. Such required changes are defined below.
-\item \texttt{convert\_types}: should be set to True
+\item \okttt{source_file}: the initial parameter file
+\item \okttt{root_key}: any namespace to be used (in our case: the robot variable)
+\item \okttt{param_rewrites}: a dictionary of parameters names with their new value. Such required changes are defined below.
+\item \okttt{convert_types}: should be set to True
 \end{itemize}
 
 Then, the output of the function should be passed instead of the actual parameter file:
@@ -239,13 +239,13 @@ sl.node(..., parameters = [configured_params])
 
 Parameters that need to be rewritten are:
 \begin{itemize}
- \item All frames, such as \texttt{odom} or \texttt{base\_link}, that should be prefixed with the robot name to make them look like \texttt{bb8/odom} or \texttt{d0/base\_link}. Note that the name of the parameter is to be used in \texttt{param\_rewrites}, not its default value. For example, \texttt{base\_link} usually appears as the \texttt{robot\_base\_frame} parameter in \texttt{nav\_param.yaml}.
+ \item All frames, such as \okttt{odom} or \okttt{base_link}, that should be prefixed with the robot name to make them look like \okttt{bb8/odom} or \okttt{d0/base_link}. Note that the name of the parameter is to be used in \okttt{param_rewrites}, not its default value. For example, \okttt{base_link} usually appears as the \okttt{robot_base_frame} parameter in \okttt{nav_param.yaml}.
  \item The robot radius, that has default value 0.105 and is used for obstacle avoidance. This should be set to '.27' for a BB-type or '.16' for a D-type. This can be done dynamically:
 \begin{pythoncodelarge}
 # robot radius depends on the robot type
 robot_rad = sl.py_eval("'", robot_type, "'=='bb' and .27 or .16")
 \end{pythoncodelarge}
-\item The Behavior Tree file, that is usually found in the \texttt{nav2\_bt\_navigator} package. Use this syntax to pass it to the rewritten params:
+\item The Behavior Tree file, that is usually found in the \okttt{nav2_bt_navigator} package. Use this syntax to pass it to the rewritten params:
 \begin{pythoncode}
  'default_bt_xml_filename': sl.find('nav2_bt_navigator','navigate_w_replanning_time.xml')   # or another file
 \end{pythoncode}
@@ -253,11 +253,11 @@ robot_rad = sl.py_eval("'", robot_type, "'=='bb' and .27 or .16")
 
 \subsection{Playing with navigation}
 
-Once the launch file is updated, you can spawn BB8 with nav capabilities, and another one with manual control. The \texttt{2D Goal Pose} button in RViz allows giving a pose setpoint for BB8 to reach. A trajectory will be found (hopefully) and the control with begin.\\
+Once the launch file is updated, you can spawn BB8 with nav capabilities, and another one with manual control. The \okttt{2D Goal Pose} button in RViz allows giving a pose setpoint for BB8 to reach. A trajectory will be found (hopefully) and the control with begin.\\
 
 Try to have the manually-controlled robot annoy BB8 by going on the planned path. It should be detected by the laser scanner, and BB8 should be able to modify its trajectory.\\
 
-You can also inspect the \texttt{nav\_param.yaml} file and try tuning the control / planning parameters. For instance, it may be allowed or not to move backwards, and various thresholds are defined to consider that the desired pose is reached.
+You can also inspect the \okttt{nav_param.yaml} file and try tuning the control / planning parameters. For instance, it may be allowed or not to move backwards, and various thresholds are defined to consider that the desired pose is reached.
 
 
 \section{Conclusion}
