@@ -23,6 +23,6 @@ rclcpp_components_register_node(puppet_node
 install(TARGETS puppet_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  RUNTIME DESTINATION lib/${PROJECT_NAME})
   
 ament_package()
