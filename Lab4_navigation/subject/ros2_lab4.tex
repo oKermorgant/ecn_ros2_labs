@@ -212,7 +212,9 @@ ros2 launch lab4_navigation spawn_launch.py robot:=d0
 
 \subsection{Adapting the parameters}
 
-Compare the files \okttt{amcl_param.yaml} and \okttt{nav_param.yaml}. The first one explicitely writes that the node is run in the \okttt{bb8} namespace. Also, the frames of interest (\okttt{bb8/odom}, \okttt{bb8/base_link}) are explicitely given in the parameter file.\\
+Compare the files \okttt{amcl_param.yaml} and \okttt{nav_param.yaml}. The first one explicitely writes that the node is run in the \okttt{bb8} namespace. 
+
+Also, the frames of interest (\okttt{bb8/odom}, \okttt{bb8/base_link}) are explicitely given in the parameter file.\\
 
 It is not the case for \okttt{nav_param.yaml}. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
 We will use a launch capability to update the parameters during launch. Do to that, import the following function in the launch file:
@@ -243,7 +245,7 @@ Parameters that need to be rewritten are:
  \item The robot radius, that has default value 0.105 and is used for obstacle avoidance. This should be set to '.27' for a BB-type or '.16' for a D-type. This can be done dynamically:
 \begin{pythoncodelarge}
 # robot radius depends on the robot type
-robot_rad = sl.py_eval("'", robot_type, "'=='bb' and .27 or .16")
+robot_rad = sl.py_eval(".27 if '", robot_type, "'=='bb' else .16")
 \end{pythoncodelarge}
 \item The Behavior Tree file, that is usually found in the \okttt{nav2_bt_navigator} package. Use this syntax to pass it to the rewritten params:
 \begin{pythoncode}
@@ -262,7 +264,7 @@ You can also inspect the \okttt{nav_param.yaml} file and try tuning the control 
 
 \section{Conclusion}
 
-In this lab, the navigation stack is detailed. You have seen that a single, potentially well-tuned, configuration file can be used for several robots by updating it on-the-fly during launch. The only frame common to all robots is the map, while any other frame is either published by the localization node (odom) or by the robot state publisher. \\
+In this lab, the navigation stack is detailed. You have seen that a single, potentially well-tuned, configuration file can be used for several robots by updating it on-the-fly during launch. The only frame common to all robots is the map, while any other frame is either published by the localization node (odom) or by the robot state publisher (robot frames). \\
 
 Many behaviors can be defined to tune how a robot navigates. Feel free to try various Behavior Tree files and see the impact on the robot.
 

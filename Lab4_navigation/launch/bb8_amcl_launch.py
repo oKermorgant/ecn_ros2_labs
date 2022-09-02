@@ -27,7 +27,6 @@ def generate_launch_description():
 
         # run lifecycle manager just for AMCL
         sl.node('nav2_lifecycle_manager','lifecycle_manager',name='lifecycle_manager',
-        output='screen',
         parameters=[{'autostart': True,
                     'node_names': ['amcl']}])
                     
