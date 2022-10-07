@@ -45,6 +45,7 @@ class Vel2Joints(Node):
         spawner = self.create_client(Spawn, '/simulator/spawn')
         while not spawner.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('spawn service not available, waiting again...')
+        self.get_logger().info(f'spawned robot {robot} in map_simulator')
             
         req = Spawn.Request()
         req.robot_namespace = self.get_namespace()
