@@ -45,7 +45,6 @@ class Vel2Joints(Node):
         spawner = self.create_client(Spawn, '/simulator/spawn')
         while not spawner.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('spawn service not available, waiting again...')
-        self.get_logger().info(f'spawned robot {robot} in map_simulator')
             
         req = Spawn.Request()
         req.robot_namespace = self.get_namespace()
@@ -57,13 +56,13 @@ class Vel2Joints(Node):
         if robot in ('bb8', 'd0'):
             req.robot_color = [170,170,170]          
                 
-        if robot == 'bb8':  # actually all default values
+        if robot == 'bb9':  # actually all default values
             req.x = 0.
             req.y = 0.
             req.theta = 0.
             req.laser_color = [255,0,0]
             
-        elif robot == 'bb9':
+        elif robot == 'bb8':
             req.x = 14.6
             req.y = 15.1
             req.theta = 2.7
