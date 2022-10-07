@@ -144,79 +144,44 @@ Many nodes have to be run to have full capabilities of the navigation stack, as 
  \includegraphics[width=.7\linewidth]{nav2_architectural_diagram}
 \end{center}
 
+The \okttt{spawn_nav_launch.py} calls all the required nav2 nodes with the default configuration file that is \okttt{nav2_params.yaml} from the package \okttt{nav2_bringup}. Of course, this parameter file may not be suited for our particular robots.
+
+Run it to see that really nothing goes as planned:
+\begin{bashcodelarge}
+ ros2 launch lab4_navigation spawn_nav_launch.py
+\end{bashcodelarge}
+
 \subsection{Creating a robot-generic navigation launch file}
 
 Four robots are defined in the lab package. There are two BB-type (BB8 / BB9) and two D-type (D0 / D9).\\
+The robot type is extracted from the \okttt{robot} launch argument at line 17, in order to load the correct model.
 
-Copy/paste the \okttt{bb8_amcl_launch.py} file to a new \okttt{spawn_launch.py} file. Then, update this file such that:
-\begin{itemize}
- \item It takes a new argument called \okttt{'robot'} with default value \okttt{'bb8'}.
- \item It runs the \okttt{vel2joints} node with a parameter \okttt{static_tf} set to True. 
-\end{itemize}
+\subsection{Testing with manual control}
 
-Install this file by compiling the package again (it is the last time!).\\
+A launch argument \okttt{use_nav} is defined in the launch file, with default value True.
 
-The type of a robot can be deduced at run-time with the following lines in the launch file:
-\begin{pythoncodelarge}
-robot = sl.arg('robot')
-robot_type = sl.py_eval("''.join(c for c in '", robot, "' if c.isalpha())") 
-\end{pythoncodelarge}\okttt{robot_type} will be either \okttt{'bb'} or \okttt{'d'}. In practice, it runs a bit of Python code to extract the non-digital characters of the robot name: \okttt{'bb8'} thus becomes \okttt{'bb'}, and so on.\\
-
-The corresponding model can be loaded accordingly:
-\begin{pythoncodelarge}
-sl.robot_state_publisher('lab4_navigation', 
-                          sl.name_join(robot_type, '.xacro'),
-                         'urdf', xacro_args={'name': robot})
-\end{pythoncodelarge}this line will read either \okttt{bb.xacro} or \okttt{d.xacro} depending on the passed \okttt{robot} argument. 
-
-\subsection{Allowing for manual control}
-
-Create a new argument called e.g. \okttt{use_nav} with default value False. \\
-
-A first conditionnal block is to run the slider publisher only if this parameter is indeed False. This is done with the following syntax:
-\begin{pythoncodelarge}
-with sl.group(unless_arg='use_nav'):
-    cmd_file = sl.find('lab4_navigation', 'cmd_sliders.yaml')
-    sl.node('slider_publisher', 'slider_publisher', arguments=[cmd_file])
-\end{pythoncodelarge}
-
-Test that the launch file works properly and that you can run BB8 in a terminal, and another robot in another terminal. You should have two slider publishers, one for each robot. In RViz, BB8 and D0 are already setup but you can easily add description / laser scanner display for the other robots.
-
-\subsection{Running navigation nodes}
-
-If the parameter \okttt{use_nav} is True, then the slider publisher should be replaced by the navigation nodes. This is done by creating a block under the condition:
-\begin{pythoncodelarge}
-with sl.group(if_arg='use_nav'):
-    # many things to do in this case
-\end{pythoncodelarge}
-
-In \okttt{bb8_amcl_launch.py}, the AMCL node in run through a life cycle manager. This should be the case for all navigation nodes. This can be done through a loop in the launch file, where each navigation node is identified by its package and its executable:
-\begin{pythoncodelarge}
-nav_nodes = [('nav2_controller','controller_server'), 
-        ('nav2_planner','planner_server'),
-        ('nav2_bt_navigator','bt_navigator'),
-        ]
-for pkg,executable in nav_nodes:
-    # run this executable from this package
-    # add the executable name to some list of nodes to be managed by life cycle manager
-\end{pythoncodelarge}Analyze the syntax used to run a node and add it to the life cycle manager, and run all the navigation nodes.\\
-
-The parameter file that should be used is now \okttt{nav_param.yaml} instead of \okttt{amcl_param.yaml}. At this time, you can run:
+Test that the robot can be manually controlled with sliders if the file in run with:
 \begin{bashcodelarge}
-# runs BB8 with nav capabilities
-ros2 launch lab4_navigation spawn_launch.py use_nav:=True
-# runs D0 with manual control (in another terminal)
-ros2 launch lab4_navigation spawn_launch.py robot:=d0
- \end{bashcodelarge}
- Nothing will work as planned with the navigation however. Indeed, the nodes are not correctly configured.
+ ros2 launch lab4_navigation spawn_nav_launch.py use_nav:=False
+\end{bashcodelarge}
 
-\subsection{Adapting the parameters}
+You can also spawn another robot in another terminal, e.g.:
+\begin{bashcodelarge}
+ ros2 launch lab4_navigation spawn_nav_launch.py robot:=d0 use_nav:=False
+\end{bashcodelarge}
+You should have two slider publishers, one for each robot. In RViz, BB8 and D0 are already setup but you can easily add description / laser scanner display for the other robots.
 
-Compare the files \okttt{amcl_param.yaml} and \okttt{nav_param.yaml}. The first one explicitely writes that the node is run in the \okttt{bb8} namespace. 
+\subsection{Running navigation nodes with custom parameters}
 
-Also, the frames of interest (\okttt{bb8/odom}, \okttt{bb8/base_link}) are explicitely given in the parameter file.\\
+If the parameter \okttt{use_nav} is True, then the slider publisher should be replaced by the navigation nodes. The corresponding code in in the \texttt{else:} block around line 32.
 
-It is not the case for \okttt{nav_param.yaml}. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
+Default nav2 nodes depend on the ROS distribution, they are listed in the file \okttt{nav2_nodes.yaml} in the \okttt{lab4_navigation/params} folder.
+
+The default parameter file is loaded around line 41. It should be configured to adapt the parameters (most importantly link names) to our robot. An example of such default file is given in the \okttt{lab4_navigation/params} folder, depending on the ROS distribution.
+
+Compare the files \okttt{amcl_param.yaml} and \okttt{nav2_params_foxy.yaml}. The first one explicitely writes that the node is run in the \okttt{bb8} namespace. Also, the frames of interest (\okttt{bb8/odom}, \okttt{bb8/base_link}) are explicitely given in the parameter file.\\
+
+It is not the case for the default parameters. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
 We will use a launch capability to update the parameters during launch. Do to that, import the following function in the launch file:
 \begin{pythoncodelarge}
 from nav2_common.launch import RewrittenYaml
@@ -245,7 +210,7 @@ Parameters that need to be rewritten are:
  \item The robot radius, that has default value 0.105 and is used for obstacle avoidance. This should be set to '.27' for a BB-type or '.16' for a D-type. This can be done dynamically:
 \begin{pythoncodelarge}
 # robot radius depends on the robot type
-robot_rad = sl.py_eval(".27 if '", robot_type, "'=='bb' else .16")
+robot_rad = '.27' if robot_type'=='bb' else '.16'
 \end{pythoncodelarge}
 \item The Behavior Tree file, that is usually found in the \okttt{nav2_bt_navigator} package. Use this syntax to pass it to the rewritten params:
 \begin{pythoncode}

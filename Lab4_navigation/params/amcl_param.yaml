@@ -27,7 +27,8 @@ bb8:
       recovery_alpha_fast: 0.0
       recovery_alpha_slow: 0.0
       resample_interval: 1
-      robot_model_type: "differential"
+      #robot_model_type: "differential" # nav2_amcl::DifferentialMotionModel in humble+
+      robot_model_type: nav2_amcl::DifferentialMotionModel  # in humble+
       save_pose_rate: 0.5
       scan_topic: '/scan'
       sigma_hit: 0.2

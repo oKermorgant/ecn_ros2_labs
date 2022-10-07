@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 from numpy import pi
@@ -27,10 +27,10 @@ class Vel2Joints(Node):
         self.v = 0
         self.w = 0    
         
-        self.dt = self.declare_parameter("dt", 0.1).get_parameter_value().double_value
+        self.dt = self.declare_parameter("dt", 0.1).value
         self.create_timer(self.dt, self.publish)
                 
-        self.spawn(self.declare_parameter("static_tf", False).get_parameter_value().bool_value)
+        self.spawn(self.declare_parameter("static_tf", False).value)
         
     def spawn(self, static_tf):
         
@@ -78,6 +78,7 @@ class Vel2Joints(Node):
             req.theta = 0.8
             
         self.future = spawner.call_async(req)
+        self.get_logger().info(f'spawned robot {robot} in map_simulator')
                 
     def cmd_callback(self, msg):
         self.v = msg.linear.x
@@ -98,7 +99,10 @@ def main(args=None):
 
     move_joints = Vel2Joints()
 
-    rclpy.spin(move_joints)
+    try:
+        rclpy.spin(move_joints)
+    except:
+        pass
     
     move_joints.destroy_node()
     

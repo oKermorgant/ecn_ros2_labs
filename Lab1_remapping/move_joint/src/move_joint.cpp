@@ -19,7 +19,7 @@ public:
   {
     // node parameters
     cmd.names.push_back(declare_parameter<std::string>("joint_name", "none"));
-    cmd.mode = 1;
+    cmd.mode = cmd.POSITION_MODE;
     cmd.command.resize(1, 0);
 
     // if joint is not known, forget about this
@@ -31,7 +31,7 @@ public:
 
     if(std::find(known_joints.begin(), known_joints.end(), cmd.names[0]) == known_joints.end())
     {
-      RCLCPP_INFO(get_logger(), "you have to specify a known joint name: was '%s'", cmd.names[0].c_str());
+      RCLCPP_INFO(get_logger(), "Parameter 'joint_name' should be a know joint: was '%s'", cmd.names[0].c_str());
       return;
     }
 

@@ -2,6 +2,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     robot_base_frame: 'base_link'
+    default_bt_xml_filename: "navigate_w_replanning_distance.xml"
     global_frame: odom
     bt_loop_duration: 10
     default_server_timeout: 20

@@ -11,7 +11,7 @@ find_package(ament_cmake REQUIRED)
 install(PROGRAMS src/vel2joints.py
   DESTINATION lib/${PROJECT_NAME})
   
-install(DIRECTORY launch urdf maps 
+install(DIRECTORY launch urdf maps params
         DESTINATION share/${PROJECT_NAME})
   
 ament_package()

@@ -163,19 +163,18 @@ In this last section we will write a new launch file that will include the previ
 
 The syntax to include a launch file in another one is as follow:
 \begin{pythoncodelarge}
-sl.include('move_joint', 'slider_launch.py', launch_arguments = [('name', 'right_e0')])
+sl.include('move_joint', 'slider_launch.py', launch_arguments = {'name': 'right_e0'})
 \end{pythoncodelarge}
 
 It should be called from a namespace block, with this syntax:
 \begin{pythoncodelarge}
 with sl.group(ns = 'right_e0'):
-  sl.include('move_joint', 'slider_launch.py', launch_arguments = [('name', 'right_e0')])
+  sl.include('move_joint', 'slider_launch.py', launch_arguments = {'name': 'right_e0'})
 \end{pythoncodelarge}
 
 Check that the behavior is similar to the previous one. Then, write a for loop to run this code for many joint names:
 \begin{pythoncodelarge}
-joints = ('right_e0', 'right_e1', ...)
-for joint in joints:
+for joint in ('right_e0', 'right_e1', ...):
     with sl.group(ns = joint):
         sl.include(...)
 \end{pythoncodelarge}
