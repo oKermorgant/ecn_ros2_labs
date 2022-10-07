@@ -37,12 +37,11 @@ def launch_setup():
                 nav2_nodes = yaml.safe_load(f)[sl.ros_version()]
                 node_names = [executable for pkg, executable in nav2_nodes]
 
-            # get default configuration file from nav2
-            nav2_config = sl.find('nav2_bringup', 'nav2_params.yaml')
+            # get default configuration file from nav2 (copied into lab4 package)
+            nav2_params = sl.find('lab4_navigation', f'nav2_params_{sl.ros_version()}.yaml')
 
             # TODO: adapt the default parameters to this robot: namespace, links, radius
-            configured_params = nav2_config
-
+            configured_params = nav2_params
 
 
 

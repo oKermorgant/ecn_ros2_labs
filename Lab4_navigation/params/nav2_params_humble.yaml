@@ -134,6 +134,7 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
+      global_frame: odom
       use_sim_time: False
       robot_radius: 0.105
       obstacle_layer:
