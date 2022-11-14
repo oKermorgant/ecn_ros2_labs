@@ -28,7 +28,7 @@ class Vel2Joints(Node):
         self.w = 0    
         
         self.dt = self.declare_parameter("dt", 0.1).value
-        self.create_timer(self.dt, self.publish)
+        self.timer = self.create_timer(self.dt, self.publish)
                 
         self.spawn(self.declare_parameter("static_tf", False).value)
         
@@ -99,13 +99,10 @@ def main(args=None):
 
     move_joints = Vel2Joints()
 
-    try:
-        rclpy.spin(move_joints)
-    except:
-        pass
-    
+    rclpy.spin(move_joints)
+
+    move_joints.destroy_timer(move_joints.timer)
     move_joints.destroy_node()
-    
     rclpy.shutdown()
 
 

@@ -133,7 +133,7 @@ local_costmap:
       use_sim_time: False
       global_frame: odom
       plugin_names: ["obstacle_layer", "inflation_layer"]
-      plugin_types: ["nav2_costmap_2d::ObstacleLayer", "nav2_costmap_2d::InflationLayer"]
+      #plugin_types: ["nav2_costmap_2d::ObstacleLayer", "nav2_costmap_2d::InflationLayer"]
       rolling_window: true
       width: 3
       height: 3
@@ -141,7 +141,9 @@ local_costmap:
       robot_radius: 0.105
       map_topic: '/map'
       robot_base_frame: 'base_link'
-      inflation_layer.cost_scaling_factor: 2.0
+      inflation_layer:
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.75
       obstacle_layer:
         enabled: True
         observation_sources: scan
