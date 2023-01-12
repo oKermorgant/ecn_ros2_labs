@@ -6,12 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Map1/Topic1
-        - /Global costmap1
-        - /Local Costmap1
         - /Local Costmap1/Topic1
         - /D0 laserscan1/Topic1
-        - /PoseArray1
-        - /PoseArray1/Topic1
+        - /ParticleCloud1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 742
   - Class: rviz_common/Selection
@@ -285,71 +282,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        d0/antenna:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        d0/eyes:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/head:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/head2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/neck:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        d0/roll:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        d0/scan:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        d0/torso:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        d0/torso1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/torso2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/torso3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        d0/wheel1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
@@ -428,17 +360,12 @@ Visualization Manager:
         Value: /bb8/amcl_pose
       Value: true
     - Alpha: 1
-      Arrow Length: 0.10000000149011612
-      Axes Length: 0.30000001192092896
-      Axes Radius: 0.009999999776482582
-      Class: rviz_default_plugins/PoseArray
-      Color: 85; 255; 255
+      Class: nav2_rviz_plugins/ParticleCloud
+      Color: 255; 25; 0
       Enabled: true
-      Head Length: 0.07000000029802322
-      Head Radius: 0.029999999329447746
-      Name: PoseArray
-      Shaft Length: 0.23000000417232513
-      Shaft Radius: 0.009999999776482582
+      Max Arrow Length: 0.30000001192092896
+      Min Arrow Length: 0.019999999552965164
+      Name: ParticleCloud
       Shape: Arrow (Flat)
       Topic:
         Depth: 5
@@ -446,7 +373,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /bb8/particlecloud
+        Value: /bb8/particle_cloud
       Value: true
   Enabled: true
   Global Options:
@@ -494,25 +421,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 32.43698501586914
+      Distance: 26.094615936279297
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.376457929611206
-        Y: 14.041243553161621
-        Z: -5.493289947509766
+        X: -1.1274073123931885
+        Y: 13.074432373046875
+        Z: -4.854485034942627
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4247976541519165
+      Pitch: 0.3697977066040039
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 4.98661470413208
+      Yaw: 4.96161413192749
     Saved: ~
 Window Geometry:
   Displays:

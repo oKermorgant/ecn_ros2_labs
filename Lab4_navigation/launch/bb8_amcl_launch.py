@@ -20,7 +20,8 @@ def generate_launch_description():
         cmd_file = sl.find('lab4_navigation', 'cmd_sliders.yaml')
         sl.node('slider_publisher', 'slider_publisher', name='cmd_vel_manual', arguments=[cmd_file])
         
-        # launch AMCL node with remappings and parameter file
+        # launch AMCL node with parameter file
+        # TODO add some remappings or change the topics in the param file
         sl.node('nav2_amcl', 'amcl',name='amcl',
                 parameters=[sl.find('lab4_navigation', 'amcl_param.yaml')],
                 arguments='--ros-args --log-level warn')

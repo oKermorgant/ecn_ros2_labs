@@ -28,8 +28,7 @@ A launch file is available in the \okttt{baxter_bridge} package to run both the 
 
 You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
- ros2ws
- source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ ros2ws && ros_baxter # so that your ROSMASTER is Baxter
  ros2 launch baxter_bridge baxter_bridge_launch.py
 \end{bashcodelarge}
 

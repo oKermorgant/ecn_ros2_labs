@@ -12,5 +12,5 @@ def generate_launch_description():
     rviz_config_file = sl.find('lab4_navigation', 'config.rviz')
     sl.node('rviz2','rviz2', output='log',
             arguments=['-d', rviz_config_file,'--ros-args', '--log-level', 'error'])
-    
+
     return sl.launch_description()

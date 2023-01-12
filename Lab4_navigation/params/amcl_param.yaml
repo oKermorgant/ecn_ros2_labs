@@ -7,7 +7,7 @@ bb8:
       alpha3: 0.2
       alpha4: 0.2
       alpha5: 0.2
-      base_frame_id: "bb8/base_link"
+      base_frame_id: "base_link"
       beam_skip_distance: 0.5
       beam_skip_error_threshold: 0.9
       beam_skip_threshold: 0.3
@@ -21,7 +21,11 @@ bb8:
       max_beams: 60
       max_particles: 2000
       min_particles: 500
-      odom_frame_id: "bb8/odom"
+      odom_frame_id: "odom"
+      initial_pose:
+        x: 0.
+        y: 0.
+        yaw: 0.
       pf_err: 0.05
       pf_z: 0.99
       recovery_alpha_fast: 0.0

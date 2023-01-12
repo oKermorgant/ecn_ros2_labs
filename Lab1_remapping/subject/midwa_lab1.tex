@@ -40,16 +40,14 @@ A launch file is available in the \okttt{baxter_bridge} package to run both the 
 
 You have to connect to Baxter's ROSMASTER in the terminal where you run the bridge:
 \begin{bashcodelarge}
- ros2ws
- source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ ros2ws && ros_baxter # so that your ROSMASTER is Baxter
  ros2 launch baxter_bridge baxter_bridge_launch.py
 \end{bashcodelarge}
 
 In you are in a lab on the real Baxter, remind the lab assistant to allow multiple publishers for this lab.
 It can be done from a ROS 1 terminal:
 \begin{bashcodelarge}
- ros1ws
- source ~/ros/baxter.sh # so that your ROSMASTER is Baxter
+ ros1ws && ros_baxter # so that your ROSMASTER is Baxter
  rosparam set allow_multiple true
 \end{bashcodelarge}
 
@@ -75,11 +73,10 @@ ros2 topic list (ROS 2)
 
 \subsection{Compiling the package}
 
-The folder should be put in your ROS 2 workspace (\okttt{\~/ros2/src}). Compilation is done by calling colcon from the root of the workspace:
+The folder should be put in your ROS 2 workspace (\okttt{\~/ros2/src}). Compilation is done by calling colcon from the root of the workspace, which is done automatically with \texttt{colbuild}:
 \begin{bashcodelarge}
- ros2ws
  cd ~/ros2
- colbuild --packages-select move_joint
+ colbuild --p move_joint
 \end{bashcodelarge}
 
 \section{Running the control nodes}

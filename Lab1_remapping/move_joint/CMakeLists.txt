@@ -2,20 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 project(move_joint)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE Release)
 
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(example_interfaces REQUIRED)
-find_package(baxter_core_msgs REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-add_executable(move_joint src/move_joint.cpp)
-ament_target_dependencies(
-  move_joint rclcpp example_interfaces baxter_core_msgs)
+ament_auto_add_executable(move_joint src/move_joint.cpp)
 
-install(TARGETS move_joint DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
 
-install(DIRECTORY launch 
-  DESTINATION share/${PROJECT_NAME}) 
-
-ament_package()
+ament_auto_package()
