@@ -21,8 +21,7 @@ namespace lab3_puppet
 class PuppetNode : public rclcpp::Node
 {
 public:
-  PuppetNode(rclcpp::NodeOptions options)
-    : Node("puppet", options), tf_buffer(get_clock()), tf_listener(tf_buffer)
+  PuppetNode(rclcpp::NodeOptions options) : Node("puppet", options)
   {
     // init whatever is needed for your node
 
@@ -43,8 +42,8 @@ private:
   ServiceNodeSync<SolvePositionIK> ik_node;
 
   // TF 2 stuff
-  tf2_ros::Buffer tf_buffer;                // stores all previous elementary transforms in a tree
-  tf2_ros::TransformListener tf_listener;   // subscribes to /tf
+  tf2_ros::Buffer tf_buffer{get_clock()};                // stores all previous elementary transforms in a tree
+  tf2_ros::TransformListener tf_listener{tf_buffer};   // subscribes to /tf
 
   void publishCommand()
   {

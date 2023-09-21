@@ -77,7 +77,7 @@ controller_server:
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.01
+      BaseObstacle.scale: 0.5
       PathAlign.scale: 32.0
       PathAlign.forward_point_distance: 0.1
       GoalAlign.scale: 24.0
@@ -102,7 +102,9 @@ local_costmap:
       robot_radius: 0.105
       map_topic: '/map'
       robot_base_frame: 'base_link'
-      inflation_layer.cost_scaling_factor: 2.0
+      inflation_layer:
+        cost_scaling_factor: 2.0
+        inflation_radius: 0.3
       obstacle_layer:
         enabled: True
         observation_sources: scan

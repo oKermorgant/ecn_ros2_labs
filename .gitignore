@@ -67,4 +67,6 @@ Thumbs.db
 *.synctex.gz*
 *.tex.backup
 
+.*
+
 !.gitignore

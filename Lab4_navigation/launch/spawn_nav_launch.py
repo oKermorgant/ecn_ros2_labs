@@ -25,7 +25,8 @@ def launch_setup():
         sl.robot_state_publisher('lab4_navigation', robot_type+'.xacro', 'urdf', xacro_args={'name': robot})
 
         if not sl.arg('use_nav'):
-            # TODO manual control with sliders as in AMCL part
+            cmd_file = sl.find('lab4_navigation', 'cmd_sliders.yaml')
+            sl.node('slider_publisher', 'slider_publisher', name='cmd_vel_manual', arguments=[cmd_file])
 
         else:
             # nav stack

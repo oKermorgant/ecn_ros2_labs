@@ -16,3 +16,4 @@ humble:
     - [nav2_smoother, smoother_server]
     #- [nav2_velocity_smoother, velocity_smoother]  # need special remapping, not important for this lab
     - [nav2_waypoint_follower, waypoint_follower]
+    - [nav2_collision_monitor, collision_monitor]
