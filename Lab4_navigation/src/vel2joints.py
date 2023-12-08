@@ -8,9 +8,9 @@ from geometry_msgs.msg import Twist
 from map_simulator.srv import Spawn
 
 
-class Vel2Joints(Node):    
+class Vel2Joints(Node):
 
-    def __init__(self):        
+    def __init__(self):
         super().__init__('vel2joints')
         
         self.js = JointState()
