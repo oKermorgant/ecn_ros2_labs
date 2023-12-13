@@ -45,7 +45,7 @@ public:
     // get limb to publish on the good side
     std::string out_topic = "/robot/limb/left/joint_command";
     if(cmd.names[0].find("right") != cmd.names[0].npos)
-      out_topic = "/robot/limb/right/joint_command";
+      out_topic = "/robot/limb/right/joint_command";   
 
     cmd_publisher = create_publisher<baxter_core_msgs::msg::JointCommand>(out_topic, 10);
   }

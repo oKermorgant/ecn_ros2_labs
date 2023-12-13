@@ -78,7 +78,7 @@ The package should be compiled by \okt{colcon} to have the files discoverable by
 \begin{bashcodelarge}
  ros2ws
  cd ~/ros2
- colbuild --packages-select lab4_navigation
+ colbuild -p lab4_navigation
 \end{bashcodelarge}
 
 In this lab, the map is also used as a simulated environment. Simulated robots can move and measure their distance to the walls or other robots through a laser scanner. The environment is run with:
