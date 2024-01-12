@@ -20,6 +20,7 @@ rclcpp_components_register_node(puppet_node
   PLUGIN "lab3_puppet::PuppetNode"
   EXECUTABLE puppet)
 
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(TARGETS puppet_node RUNTIME DESTINATION lib/${PROJECT_NAME})
   
 ament_package()
