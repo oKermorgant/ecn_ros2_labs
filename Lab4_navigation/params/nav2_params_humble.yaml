@@ -55,6 +55,7 @@ bt_navigator:
     - nav2_spin_cancel_bt_node
     - nav2_back_up_cancel_bt_node
     - nav2_drive_on_heading_cancel_bt_node
+
     
 controller_server:
   ros__parameters:
@@ -85,7 +86,7 @@ controller_server:
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
 
-
+    # Dynamic Window Approach
     # basic MPC with DWB
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
