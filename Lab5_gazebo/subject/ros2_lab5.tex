@@ -10,223 +10,30 @@
 
 \insertsubtitle{Lab 5: Gazebo and robot descriptions}
 
+\paragraph{work in progress for 2024 intake}
+
 \section{Goals}
 
 This lab aims to have a better understanding on what is a robot description (\link{http://wiki.ros.org/urdf}{URDF format}) and how to set up a dynamic simulation for robot arms and mobile robots.
 
 \paragraph{Note} contrary to the other labs, this one might have trouble running in a virtual machine due to the computation load from Gazebo
- 
-\subsection{The navigation2 packages}
- 
-By using the navigation stack you will get familiar with:
-\begin{itemize}
- \item Standard 3D frames for mobile platforms (\link{https://www.ros.org/reps/rep-0105.html}{REP 105})
- \item Capabilities of the navigation2 stack:
- \begin{itemize}
-  \item SLAM
-  \item Map server: take a map and publish it to other nodes
-  \item Localization: estimate the pose of the robot by comparing laser readings to the map
-  \item Planning: compute the path to a given goal position on the map
-  \item Control: track the path, avoid unexpected obstacles if needed
- \end{itemize}
-\end{itemize}
 
-In this lab, SLAM is not performed as it takes too much time. Indeed, taking 15 or 20 min of raw laser data and create a map out of it is quite computationally intensive. Some online tutorial explain how to do it from a bag file, either in ROS 1 or ROS 2.
-
-Here we thus assume that a map is given.
-
-\subsection{Maps in ROS}
-
-In ROS 1 or 2, a map is a combination of two files:\\
-
-\begin{minipage}{.6\linewidth}
- \begin{itemize}
-  \item An image file describing occupied (black) / free (white) or unknown (grey) occupancy grid
-  \item A YAML file describing the link between image space (in pixels) and Euclidean space (in meter)
-  \begin{pythoncodelarge}
-# map image
-image: batS.pgm  
-# size of one pixel in meters
-resolution: 0.020000
-#coordinates of the pixel (0,0)
-origin: [-6.064576, -10.118860, 0.000000]
-negate: 0
-occupied_thresh: 0.65 
-free_thresh: 0.196
-  \end{pythoncodelarge}
- \end{itemize} 
-\end{minipage}
-\begin{minipage}{.05\linewidth}
- ~
-\end{minipage}
-\begin{minipage}{.33\linewidth}
- \includegraphics[width=\linewidth]{batS}
-\end{minipage}~\\
-
-Such maps can be generated from a SLAM algorithm, and are the core data of any localization or navigation capabilities.
-
-Here, the map was built by running a Turtlebot robot on the 4th floor of Building S on the Centrale Nantes campus. The room on the bottom-left is actually my office.
-
-
-\subsection{Compiling and running the simulation}
+\subsection*{Compiling and running the package}
 
 The package should be compiled by \okt{colcon} to have the files discoverable by ROS 2:
 \begin{bashcodelarge}
  ros2ws
  cd ~/ros2
- colbuild -p lab4_navigation
+ colbuild -p lab5_gazebo
 \end{bashcodelarge}
 
-In this lab, the map is also used as a simulated environment. Simulated robots can move and measure their distance to the walls or other robots through a laser scanner. The environment is run with:
-\begin{bashcodelarge}
- ros2 launch lab4_navigation simulation_launch.py 
-\end{bashcodelarge}This will create two windows:
-\begin{itemize}
- \item \okt{Simulator 2D} which is the actual simulation (without any robot for now)
- \item \okt{Rviz2} which is the main visualization GUI in ROS.
-\end{itemize}
-The windows can be kept alive during the whole lab.
 
-\newpage
-
-\section{Pure localization}
-
-In the first step, pure localization will be considered with manual control. This can be done for one robot by running:
-\begin{bashcodelarge}
- ros2 launch lab4_navigation bb8_amcl_launch.py
-\end{bashcodelarge}
-The BB8 robot is displayed in the simulation (true pose) and in RViz (estimated pose).\\
-
-For this initial run, things should not go as planned. Identify which topics AMCL subscribes to, versus which topics should be used instead. These topics (and frames of interest) are defined in the file \okt{params/amcl_param.yaml} that sets a number of ROS parameters for AMCL. \\Change their names either here, or using remappings in \okt{bb8_amcl_launch.py}.
-
-\subsection{AMCL}
-
-The set of all red arrows represents how AMCL (Adaptative Monte-Carlo Localization) works. Here localization is not done eg with a Kalman Filter but with a particle filter. Each particle is a state candidate (pose + velocity). The overall estimation is the center of gravity of all particles.
-
-From laser readings, some particles are pruned as they are not consistent with the scans.
-
-\subsection{Interaction with RViz}
-
-You can reset the estimation by using the \okt{2D Pose Estimate} button in RViz. Try giving a completely wrong estimate and check that:
-\begin{itemize}
- \item The simulated robot is still at the same place in the simulation window
- \item Its pose is not the same in RViz, and the laser scans are not aligned with the walls
-\end{itemize}
-
-\subsection{Moving the robot}
-
-This launch file also runs a slider publisher to move BB8 as a 2-0 robot with a $(v,\omega)$ command.\\
-When the robot has a slight estimation error, try to have it rotate (pure $\omega$ command) to check if AMCL is able to realign the laser scans to the walls. \\
-On the opposite, try to put the robot at a similar but different place (the floor being almost symmetric).
-AMCL will not be able to tell that the robot position is completely wrong, as the laser scans can be correctly aligned with the known walls.
-
-\subsection{Nodes and frames}
-
-Use \okt{rqt_graph} and TF tools (\okt{tf2_tools view_frames.py}) to display the nodes and the frames:
-\begin{itemize}
- \item Which frames are linked to the robot, to the map, in-between?
- \item Which node publishes each frame transform?
- \item Especially, what do the following transforms correspond to and which nodes are responsible for them:
- \okt{map} $\rightarrow$ \okt{bb8/odom} $\rightarrow$ \okt{bb8/base_link}.
-\end{itemize}
-
-\section{Planning and control}
-
-In this part, we will consider a perfect localization. Instead of running AMCL (that can be CPU intensive), a perfect estimation 
-will be published by running the \okt{vel2joints} node with the parameter \okt{static_tf} set to True.
-
-Many nodes have to be run to have full capabilities of the navigation stack, as shown in the following figure:
-\begin{center}
- \includegraphics[width=.7\linewidth]{nav2_architectural_diagram}
-\end{center}
-
-The \okt{spawn_nav_launch.py} calls all the required nav2 nodes with the default configuration file that is \okt{nav2_params.yaml} from the package \okt{nav2_bringup}. Of course, this parameter file may not be suited for our particular robots.
-
-Run it to see that really nothing goes as planned:
-\begin{bashcodelarge}
- ros2 launch lab4_navigation spawn_nav_launch.py
-\end{bashcodelarge}
-
-\subsection{Creating a robot-generic navigation launch file}
-
-Four robots are defined in the lab package. There are two BB-type (BB8 / BB9) and two D-type (D0 / D9).\\
-The robot type is extracted from the \okt{robot} launch argument at line 17, in order to load the correct model.
-
-\subsection{Testing with manual control}
-
-A launch argument \okt{use_nav} is defined in the launch file, with default value True.
-
-Test that the robot can be manually controlled with sliders if the file in run with:
-\begin{bashcodelarge}
- ros2 launch lab4_navigation spawn_nav_launch.py use_nav:=False
-\end{bashcodelarge}
-
-You can also spawn another robot in another terminal, e.g.:
-\begin{bashcodelarge}
- ros2 launch lab4_navigation spawn_nav_launch.py robot:=d0 use_nav:=False
-\end{bashcodelarge}
-You should have two slider publishers, one for each robot. In RViz, BB8 and D0 are already setup but you can easily add description / laser scanner display for the other robots.
-
-\subsection{Running navigation nodes with custom parameters}
-
-If the parameter \okt{use_nav} is True, then the slider publisher should be replaced by the navigation nodes. The corresponding code in in the \texttt{else:} block around line 32.
-
-Default nav2 nodes depend on the ROS distribution, they are listed in the file \okt{nav2_nodes.yaml} in the \okt{lab4_navigation/params} folder.
-
-The default parameter file is loaded around line 41. It should be configured to adapt the parameters (most importantly link names) to our robot. An example of such default file is given in the \okt{lab4_navigation/params} folder, depending on the ROS distribution.
-
-Compare the files \okt{amcl_param.yaml} and \okt{nav2_params_foxy.yaml}. The first one explicitely writes that the node is run in the \okt{bb8} namespace. Also, the frames of interest (\okt{bb8/odom}, \okt{bb8/base_link}) are explicitely given in the parameter file.\\
-
-It is not the case for the default parameters. And it should not, as this file may be used for various robots that all have their own namespace and frame prefix.\\
-We will use a launch capability to update the parameters during launch. Do to that, import the following function in the launch file:
-\begin{pythoncodelarge}
-from nav2_common.launch import RewrittenYaml
-\end{pythoncodelarge}
-
-This function takes the following arguments:
-\begin{itemize}
-\item \okt{source_file}: the initial parameter file
-\item \okt{root_key}: any namespace to be used (in our case: the robot variable)
-\item \okt{param_rewrites}: a dictionary of parameters names with their new value. Such required changes are defined below.
-\item \okt{convert_types}: should be set to True
-\end{itemize}
-
-Then, the output of the function should be passed instead of the actual parameter file:
-\begin{pythoncodelarge}
-configured_params = RewrittenYaml(source_file = ...,
-                                    root_key = ..., 
-                                    param_rewrites = ...,
-                                    convert_types = True)
-sl.node(..., parameters = [configured_params])
-\end{pythoncodelarge}
-
-Parameters that need to be rewritten are:
-\begin{itemize}
- \item All frames, such as \okt{odom} or \okt{base_link}, that should be prefixed with the robot name to make them look like \okt{bb8/odom} or \okt{d0/base_link}. Note that the name of the parameter is to be used in \okt{param_rewrites}, not its default value. For example, \okt{base_link} usually appears as the \okt{robot_base_frame} parameter in \okt{nav_param.yaml}.
- \item The robot radius, that has default value 0.105 and is used for obstacle avoidance. This should be set to '.27' for a BB-type or '.16' for a D-type. This can be done dynamically:
-\begin{pythoncodelarge}
-# robot radius depends on the robot type
-robot_rad = '.27' if robot_type=='bb' else '.16'
-\end{pythoncodelarge}
-\item The Behavior Tree file, that is usually found in the \okt{nav2_bt_navigator} package. Use this syntax to pass it to the rewritten params:
-\begin{pythoncode}
- 'default_bt_xml_filename': sl.find('nav2_bt_navigator','navigate_w_replanning_time.xml')   # or another file
-\end{pythoncode}
-\end{itemize}
-
-\subsection{Playing with navigation}
-
-Once the launch file is updated, you can spawn BB8 with nav capabilities, and another one with manual control. The \okt{2D Goal Pose} button in RViz allows giving a pose setpoint for BB8 to reach. A trajectory will be found (hopefully) and the control with begin.\\
-
-Try to have the manually-controlled robot annoy BB8 by going on the planned path. It should be detected by the laser scanner, and BB8 should be able to modify its trajectory.\\
-
-You can also inspect the \okt{nav_param.yaml} file and try tuning the control / planning parameters. For instance, it may be allowed or not to move backwards, and various thresholds are defined to consider that the desired pose is reached.
+\section{Robots in RViz: links and joints}
 
 
-\section{Conclusion}
+\section{Robots in Gazebo: inertias and plugins}
 
-In this lab, the navigation stack is detailed. You have seen that a single, potentially well-tuned, configuration file can be used for several robots by updating it on-the-fly during launch. The only frame common to all robots is the map, while any other frame is either published by the localization node (odom) or by the robot state publisher (robot frames). \\
 
-Many behaviors can be defined to tune how a robot navigates. Feel free to try various Behavior Tree files and see the impact on the robot.
+
 
 \end{document}
