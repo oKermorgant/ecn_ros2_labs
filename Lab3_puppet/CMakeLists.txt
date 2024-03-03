@@ -12,8 +12,7 @@ find_package(rclcpp_components REQUIRED)
 
 # source file for lab3: just a C++ class
 add_library(puppet_node SHARED puppet_node.cpp ik_client.h)
-ament_target_dependencies(
-  puppet_node rclcpp baxter_core_msgs tf2_ros rclcpp_components)
+ament_target_dependencies(puppet_node rclcpp baxter_core_msgs tf2_ros rclcpp_components)
 
 # auto-executable from node
 rclcpp_components_register_node(puppet_node
