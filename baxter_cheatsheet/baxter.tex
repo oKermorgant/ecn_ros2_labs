@@ -60,7 +60,7 @@ On the ROS 1 side, if several people publish on the joint command topics they wi
 \end{center}
 
 
-This can be controller on the ROS 2 side as \okt{baxter\_bridge} checks for a special parameter. In practice, {\bf only the first lab} should allow all students to control the arm at the same time. To ensure this, type:
+This can be controlled on the ROS 2 side as \okt{baxter\_bridge} checks for a special parameter. In practice, {\bf only the first lab} should allow all students to control the arm at the same time. To ensure this, type:
  \begin{bashcodelarge}
  ros1ws && ros_baxter # so that your ROSMASTER is Baxter
  rosparam set allow_multiple true

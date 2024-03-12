@@ -104,9 +104,21 @@ The Baxter robot has $2\times 7$ joints as shown in \Fig{baxter}, the names of w
  \label{baxter}
 \end{figure}
 
-A special node called \okt{move_joint} should be used to change the value published by the slider GUI, to the setpoint of a particular joint:
+A special node called \okt{move_joint} should be used to change the value published by the slider GUI, to the setpoint of a particular joint.
 \begin{bashcodelarge}
+ # this runs the node without a parameter, it will not be happy
  ros2 run move_joint move_joint
+\end{bashcodelarge}
+\begin{bashcodelarge}
+ # this runs the node with a joint_name parameter
+ # the topics are still differents!
+ ros2 run move_joint move_joint --ros-args -p joint_name:=right_e0
+\end{bashcodelarge}
+\begin{bashcodelarge}
+ # this runs the node with a joint_name parameter
+ # it also tells to use /setpoint instead of /joint_setpoint
+ ros2 run move_joint move_joint --ros-args -p joint_name:=right_e0 \
+                                           -r joint_setpoint:=setpoint
 \end{bashcodelarge}
 
 \subsection{Initial state of the control nodes}
@@ -116,12 +128,16 @@ Use \okt{ros2 node} and \okt{ros2 topic} to get the information on the nodes. Th
  \item The \okt{move_joint} node needs a parameter to tell which joint it should be controlling
  \item The slider publishes on \okt{setpoint} while the  \okt{move_joint} node listens to \okt{joint_setpoint}
 \end{itemize}
-Additionally, it would be nice to run the two nodes in the same lauch file.
+Additionally, it would be nice to run the two nodes in the same launch file.
 
 \subsection{Regroup all nodes in the same launch file}
 
-Open the \okt{slider_launch.py} and add a line equivalent to calling \okt{ros2 run move_joint move_joint}.\\
-Then, add a parameter to tell which joint should be controlled:\\\okt{parameters = \{'joint_name': 'right_e0'\}}\\
+Open the \okt{slider_launch.py} and add a line equivalent to calling \okt{move_joint}.\\
+Then, add a parameter to tell which joint should be controlled:
+\begin{pythoncode}
+ parameters = {'joint_name': 'right_e0'}
+\end{pythoncode}
+
 
 To run this launch file, you can go to its folder and type \okt{ros2 launch ./slider_launch.py}.\\
 Display the graph (\okt{rqt_graph}) to detect that the slider node and \okt{move_joint} do not communicate, because they do not use the same topics.
@@ -133,7 +149,7 @@ In this section we will remap the topic name of \okt{move_joint} such that is us
 Modify the launch file by adding this argument to the \okt{move_joint} node:
 
 \begin{pythoncodelarge}
-remappings = {'joint_setpoint': 'setpoint'}.items()
+remappings = {'joint_setpoint': 'setpoint'}
 \end{pythoncodelarge}
 Run the launch file again and you should be able to control the chosen joint.
 
@@ -154,7 +170,10 @@ Also, you can rename the slider GUI by giving an additional argument:
 sl.node('slider_publisher', 'slider_publisher', name=sl.arg('name'), ...)
 \end{pythoncodelarge}
 
-Then, run the launch file with another name, for instance:\\ \okt{ros2 launch ./slider_launch.py name:=left_e0}\\
+Then, run the launch file with another name, for instance:
+\begin{bashcodelarge}
+ ros2 launch ./slider_launch.py name:=left_e0
+\end{bashcodelarge}
 On another terminal, try to run the same launch file for another joint. What happens?\\
 
 
