@@ -20,12 +20,17 @@ In ROS, a lot of commands have to be run from the terminal. Each terminal should
 A simple shortcut allows changing this:
 \begin{bashcodelarge}
 ros1ws  # type this to configure the terminal for ROS 1 (default)
-ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually)
+ros2ws  # type this to configure the terminal for ROS 2 (has to be done manually once)
 \end{bashcodelarge}
 
-You can change the default behavior by updating the ros1ws line of your \okt{.bashrc} file.
+You can change the default behavior by updating the line of your \okt{.bashrc} file:
+\begin{bashcode}
+ source /opt/ecn/ros_management_tools/ros_management.bash -p -k -lo -ros1 # default to ROS 1
+ source /opt/ecn/ros_management_tools/ros_management.bash -p -k -lo -ros2 # default to ROS 2
+\end{bashcode}
 
-Each time a package is compiled, the corresponding command (ros1ws / ros2ws) should be run in order to refresh the package list.
+
+Each time a package is compiled, the corresponding command  should be run in order to refresh the package list.
 
 \subsection{Bring up Baxter}
 
@@ -57,7 +62,7 @@ The Baxter simulator behaves as the actual Baxter from the ROS 2 side, only with
 
 The \okt{baxter_bridge} node should be run from a ROS 2 terminal:
 \begin{bashcodelarge}
-ros2ws
+ros2ws  # if needed
 ros2 launch baxter_simple_sim sim_launch.py
 \end{bashcodelarge}
 The launch file also runs RViz.
