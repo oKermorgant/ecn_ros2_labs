@@ -55,13 +55,28 @@ Baxter is a pure ROS 1 robot so running it is done on ROS 1:
 
 On the ROS 1 side, if several people publish on the joint command topics they will all move the robot.
 
+\begin{center}
+ \includegraphics[width=.5\linewidth]{sync}
+\end{center}
+
+
 This can be controller on the ROS 2 side as \okt{baxter\_bridge} checks for a special parameter. In practice, {\bf only the first lab} should allow all students to control the arm at the same time. To ensure this, type:
  \begin{bashcodelarge}
  ros1ws && ros_baxter # so that your ROSMASTER is Baxter
  rosparam set allow_multiple true
 \end{bashcodelarge}
 
-\section{Powering off}
+\subsection{Running the bridge}
+
+Baxter bridge in a ROS 2 and ROS 1 node, but should be run through ROS 2. The ROS 1 part still needs to connect on Baxter's ROSMASTER:
+ \begin{bashcodelarge}
+ ros2ws && ros_baxter # use ROS 2 but set ROS 1 ROSMASTER to Baxter
+ ros2 launch baxter_bridge baxter_bridge_launch.py
+\end{bashcodelarge}
+
+Each student should have their own bridge, that will communicate locally on ROS 2 but with Baxter on ROS 1.
+
+\subsection{Powering off}
 
 \begin{bashcodelarge}
  ros1ws && ros_baxter # use ROS 1 on Baxter's ROSMASTER
