@@ -2,7 +2,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     robot_base_frame: 'base_link'
-    global_frame: odom
+    #global_frame: map  # default value, comment out or it will be changed to <robot>/odom
     default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
@@ -121,7 +121,7 @@ global_costmap:
     ros__parameters:
       use_sim_time: False
       robot_radius: 0.105
-      global_frame: odom
+      #global_frame: map  # default value, comment out or it will be changed to <robot>/odom
       obstacle_layer:
         enabled: True
       always_send_full_costmap: True
