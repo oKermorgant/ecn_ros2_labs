@@ -2,6 +2,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     robot_base_frame: 'base_link'
+    odom_topic: odom
     #global_frame: map  # default value, comment out or it will be changed to <robot>/odom
     default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
     plugin_lib_names:
