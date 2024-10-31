@@ -8,7 +8,7 @@ foxy: &id001
 galactic: *id001    # same as foxy
 
 # humble has brough new nodes, behavior replaces recoveries
-humble:
+humble: &id002
     - [nav2_behaviors, behavior_server]
     - [nav2_bt_navigator, bt_navigator]
     - [nav2_controller, controller_server]
@@ -17,3 +17,5 @@ humble:
     #- [nav2_velocity_smoother, velocity_smoother]  # need special remapping, not important for this lab
     - [nav2_waypoint_follower, waypoint_follower]
     - [nav2_collision_monitor, collision_monitor]
+
+jazzy: *id002

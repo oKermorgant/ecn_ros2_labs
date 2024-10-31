@@ -89,8 +89,8 @@ class Vel2Joints(Node):
         self.js.position[0] += self.v*self.dt/self.radius
         self.js.position[1] = self.v*pi/12
         self.js.position[2] = self.w*pi/12
-        self.js.header.stamp = self.get_clock().now().to_msg()        
-        self.js_pub.publish(self.js)        
+        self.js.header.stamp = self.get_clock().now().to_msg()
+        self.js_pub.publish(self.js)
     
 
 def main(args=None):
