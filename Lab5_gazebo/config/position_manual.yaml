@@ -1,0 +1,16 @@
+# manual control for slider_publisher
+joint1_cmd_pos:
+    type: std_msgs/Float64
+    position:
+        min: -pi
+        max: pi
+joint2_cmd_pos:
+    type: std_msgs/Float64
+    position:
+        min: -pi
+        max: pi
+joint3_cmd_pos:
+    type: std_msgs/Float64
+    position:
+        min: -2
+        max: 2

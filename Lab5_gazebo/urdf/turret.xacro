@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<robot name="turret" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:arg name="x" default="0"/>
+<xacro:arg name="y" default="0"/>
+<xacro:arg name="mode" default="velocity"/>
+<xacro:property name="mode" value="$(arg mode)"/>
+
+<material name="matbase">
+        <color rgba="1 1 1 1"/>
+      </material>
+ <material name="mat3">
+        <color rgba="1 1 1 1"/>
+      </material>
+ <material name="mat2">
+        <color rgba=".8 0 0 1"/>
+      </material>
+ <material name="mat1">
+        <color rgba=".0 0 0 1"/>
+      </material>
+ <material name="mat4">
+        <color rgba=".0 1 0 1"/>
+      </material>
+
+
+<xacro:macro name="inertia" params="mass">
+<!--     <inertial>
+      <mass value="${mass}"/>
+      <inertia  izz="${mass}" ixy="0.0"  ixz="0.0"
+                iyy="${mass}" iyz="0.0"
+                ixx="${mass}" />
+    </inertial>-->
+</xacro:macro>
+
+
+<!--<link name="world"/>
+
+<joint name="base_link" type="fixed">
+    <parent link="world" />
+    <child link="turret/base_link" />
+    <origin xyz="$(arg x) $(arg y) 0.0" />
+</joint>-->
+
+
+<!-- Links -->
+  <link name="turret/base_link">
+    <visual>
+      <origin xyz="0 0 0.25" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.5" radius="0.025"/>
+      </geometry>
+    <material name="matbase"/>
+    </visual>
+<!--    <collision>
+      <origin xyz="0 0 0.25" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.5" radius="0.025"/>
+      </geometry>
+    </collision>-->
+    <xacro:inertia mass="0.5"/>
+  </link>
+
+<link name="turret/link1">
+<visual>
+<geometry>
+        <sphere radius="0.02"/>
+</geometry>
+ <material name="mat1"/>
+    </visual>
+    <xacro:inertia mass="0.1"/>
+</link>
+
+<link name="turret/link2">
+<visual>
+<origin xyz="0 0 0.0" rpy="0 1.57079632679 0" />
+<geometry>
+        <cylinder length="0.01" radius="0.021"/>
+</geometry>
+ <material name="mat2"/>
+    </visual>
+    <xacro:inertia mass="0.1"/>
+</link>
+
+<link name="turret/link2_2">
+<visual>
+        <origin xyz="0 .03 0.0" rpy="1.57079632679 0 0" />
+        <geometry>
+        <cylinder length="0.06" radius="0.004"/>
+</geometry>
+ <material name="mat2"/>
+    </visual>
+    <xacro:inertia mass="0.1"/>
+</link>
+
+<link name="turret/link3">
+<visual>
+        <origin xyz="0 0 .06" rpy="0 0 0" />
+<geometry>
+        <cylinder length="0.08" radius="0.0035"/>
+</geometry>
+ <material name="mat3"/>
+    </visual>
+    <xacro:inertia mass="0.1"/>
+</link>
+
+<link name="turret/tool0">
+<visual>
+        <origin xyz="0 0 .001" rpy="0 0 0" />
+<geometry>
+<sphere  radius=".004"/>
+</geometry>
+        <material name="mat4"/>
+    </visual>
+    <xacro:inertia mass="0.05"/>
+</link>
+
+<!-- Joints -->
+
+	<joint name="joint1" type="revolute">
+        <limit lower="-3.1416" upper="3.1416" effort="10" velocity="3" />
+	<dynamics damping="0.0" friction="0.0"/>
+    	<parent link="turret/base_link" />
+    	<child link="turret/link1" />
+    	<origin xyz="0.0 0 0.5" rpy="0 0 0" />
+    	<axis xyz="0 0 1" />
+	</joint>
+
+	<joint name="joint2" type="revolute">
+        <limit lower="-1.2" upper="1.2" effort="10" velocity="3" />
+	<dynamics damping="0.0" friction="0.0"/>
+    	<parent link="turret/link1" />
+    	<child link="turret/link2" />
+    	<origin xyz="0. 0 0.0" rpy="1.57079632679 0 0" />
+    	<axis xyz="0 0 1" />
+	</joint>
+
+	<joint name="link2_2" type="fixed">
+    	<parent link="turret/link2" />
+    	<child link="turret/link2_2" />
+    	<origin xyz="0.0 0 0.0" rpy="0 0 0" />
+	</joint>
+
+	<joint name="joint3" type="prismatic">
+        <limit lower="0" upper="1." effort="10" velocity="3" />
+    <dynamics damping="0.0" friction="0.0"/>
+    	<parent link="turret/link2" />
+    	<child link="turret/link3" />
+    	<origin xyz="0. 0 0." rpy="-1.57079632679 0 0" />
+    	<axis xyz="0 0 1" />
+	</joint>
+
+	<joint name="link4_2" type="fixed">
+    	<parent link="turret/link3" />
+    	<child link="turret/tool0" />
+    	<origin xyz="0.0 0 0.1" rpy="${pi/2} ${pi/2} 0" />
+	</joint>
+
+
+    <xacro:macro name="control" params="joint">
+
+      <xacro:if value="${mode == 'position'}">
+        <plugin filename="libignition-gazebo-joint-position-controller-system.so" name="ignition::gazebo::systems::JointPositionController">
+                <joint_name>${joint}</joint_name>
+                <p_gain>1.</p_gain>
+                <i_gain>0.1</i_gain>
+                <d_gain>0.2</d_gain>
+                <i_max>10</i_max>
+                <i_min>-10</i_min>
+                <cmd_max>10</cmd_max>
+                <cmd_min>-10</cmd_min>
+            </plugin>
+    </xacro:if>
+
+     <xacro:if value="${mode == 'velocity'}">
+        <plugin filename="libignition-gazebo-joint-controller-system.so" name="ignition::gazebo::systems::JointController">
+            <joint_name>${joint}</joint_name>
+            <topic>turret/${joint}_cmd_vel</topic>
+        </plugin>
+        </xacro:if>
+
+    </xacro:macro>
+
+<gazebo>
+
+      <!-- Velocity or position control -->
+      <xacro:control joint="joint1"/>
+      <xacro:control joint="joint2"/>
+      <xacro:control joint="joint3"/>
+
+      <!-- Publish joint states anyway -->
+      <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher"/>
+
+      <!-- Publish pose of this model -->
+      <plugin
+            filename="ignition-gazebo-pose-publisher-system"
+            name="ignition::gazebo::systems::PosePublisher">
+            <publish_link_pose>false</publish_link_pose>
+            <publish_collision_pose>false</publish_collision_pose>
+            <publish_visual_pose>false</publish_visual_pose>
+            <publish_nested_model_pose>true</publish_nested_model_pose>
+        </plugin>
+    </gazebo>
+
+
+ <gazebo reference="turret/tool0">
+  <sensor name="camera" type="camera">
+    <camera>
+    <optical_frame_id>turret/tool0</optical_frame_id>
+    <horizontal_fov>1.047</horizontal_fov>
+    <image>
+        <width>640</width>
+        <height>400</height>
+    </image>
+    <clip>
+        <near>0.05</near>
+        <far>100</far>
+    </clip>
+    </camera>
+    <always_on>1</always_on>
+    <update_rate>30</update_rate>
+    <visualize>true</visualize>
+    <topic>turret/image</topic>
+    <enable_metrics>false</enable_metrics>
+  </sensor>
+</gazebo>
+
+
+
+
+
+
+</robot>

@@ -6,6 +6,6 @@ set(CMAKE_BUILD_TYPE Release)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY urdf launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY urdf launch config DESTINATION share/${PROJECT_NAME})
   
 ament_package()

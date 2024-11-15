@@ -1,0 +1,16 @@
+# manual control for slider_publisher
+joint1_cmd_vel:
+    type: std_msgs/Float64
+    vel:
+        min: -1.
+        max: 1.
+joint2_cmd_vel:
+    type: std_msgs/Float64
+    vel:
+        min: -1.
+        max: 1.
+joint3_cmd_vel:
+    type: std_msgs/Float64
+    vel:
+        min: -1.
+        max: 1.
