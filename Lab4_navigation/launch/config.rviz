@@ -146,6 +146,8 @@ Visualization Manager:
       Use rainbow: true
       Value: true
     - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
@@ -167,8 +169,10 @@ Visualization Manager:
       Use Timestamp: false
       Value: true
     - Alpha: 0.20000000298023224
+      Binary representation: false
+      Binary threshold: 100
       Class: rviz_default_plugins/Map
-      Color Scheme: map
+      Color Scheme: costmap
       Draw Behind: false
       Enabled: true
       Name: Global costmap
@@ -188,6 +192,8 @@ Visualization Manager:
       Use Timestamp: false
       Value: true
     - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
       Class: rviz_default_plugins/Map
       Color Scheme: costmap
       Draw Behind: false
@@ -421,25 +427,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 26.094615936279297
+      Distance: 25.372867584228516
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.1274073123931885
-        Y: 13.074432373046875
-        Z: -4.854485034942627
+        X: 6.100561141967773
+        Y: 10.989752769470215
+        Z: -2.511479139328003
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3697977066040039
+      Pitch: 0.6147975921630859
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 4.96161413192749
+      Yaw: 0.58843594789505
     Saved: ~
 Window Geometry:
   Displays:

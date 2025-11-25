@@ -6,7 +6,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <baxter_core_msgs/msg/joint_command.hpp>
 #include <baxter_core_msgs/srv/solve_position_ik.hpp>
-#include <algorithm>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
 #include "ik_client.h"

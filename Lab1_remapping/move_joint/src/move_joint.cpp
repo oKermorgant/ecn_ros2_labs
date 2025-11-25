@@ -1,8 +1,5 @@
 
-#include <sstream>
-#include <stdio.h>
 #include <vector>
-#include <iostream>
 #include <stdlib.h>
 #include <math.h>
 
@@ -16,9 +13,10 @@ class MoveJoint : public rclcpp::Node
 {
 public:
   MoveJoint() : Node("move_joint")
-  {
+  {	
     // node parameters
-    cmd.names.push_back(declare_parameter<std::string>("joint_name", "none"));
+    const auto name{declare_parameter<std::string>("joint_name", "none")};
+    cmd.names.push_back(name);
     cmd.mode = cmd.POSITION_MODE;
     cmd.command.resize(1, 0);
 

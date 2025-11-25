@@ -10,4 +10,4 @@ ament_auto_find_build_dependencies()
 # source file for lab2: an actual executable
 ament_auto_add_executable(mirror_node mirror_node.cpp)
   
-ament_auto_package()
+ament_auto_package(USE_SCOPED_HEADER_INSTALL_DIR)
