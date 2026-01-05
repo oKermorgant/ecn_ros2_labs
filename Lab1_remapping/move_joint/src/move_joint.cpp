@@ -1,7 +1,4 @@
-
 #include <vector>
-#include <stdlib.h>
-#include <math.h>
 
 //ROS
 #include <rclcpp/rclcpp.hpp>

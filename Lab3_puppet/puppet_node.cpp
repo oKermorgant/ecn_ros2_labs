@@ -46,29 +46,29 @@ private:
 
   void publishCommand()
   {
-    // check if the transform from base to left_gripper_desired is available
-    if(tf_buffer.canTransform("left_gripper_desired", "base", tf2::TimePointZero, tf2::durationFromSec(1.0)))
+    // ensure the transform from base to left_gripper_desired is available
+    if(not tf_buffer.canTransform("left_gripper_desired", "base", tf2::TimePointZero, tf2::durationFromSec(1.0)))
+      return;
+
+    // get this transform with tf_buffer.lookupTransform("base", "left_gripper_desired", ...
+
+
+    // build service request SolvePositionIK::Request from obtained transform
+    SolvePositionIK::Request req;
+
+
+
+
+
+
+    // call service and get response
+    if(SolvePositionIK::Response res; ik_node.call(req, res))
     {
-      // get this transform with tf_buffer.lookupTransform("base", "left_gripper_desired", ...
+      // call to IK was successfull, check if the solution is valid
+
+      // copy response data to joint command and publish to left arm
 
 
-      // build service request SolvePositionIK::Request from obtained transform
-      SolvePositionIK::Request req;
-
-
-
-
-
-
-      // call service and get response
-      if(SolvePositionIK::Response res; ik_node.call(req, res))
-      {
-        // call to IK was successfull, check if the solution is valid
-
-        // copy response data to joint command and publish to left arm
-
-
-      }
     }
   }
 };

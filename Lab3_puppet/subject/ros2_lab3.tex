@@ -88,6 +88,11 @@ The node \okt{static_transform_publisher} from the \okt{tf2_ros} package is desi
  \item \okt{x y z yaw pitch roll} is the 3D transform (here \okt{0 0 0.1 0 3.14 0})
 \end{itemize}
 
+You can check the full TF tree with this command, the new frame should be appearing after \okt{right_gripper}:
+\begin{bashcodelarge}
+ ros2 run tf2_tools view_frames
+\end{bashcodelarge}This will generate a PDF file with all known frames and their hierarchy.
+
 \subsection{Putting all together}
 
 A single launch file should be written in order to regroup the previous commands:
