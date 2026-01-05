@@ -1,16 +1,9 @@
-#ifndef IK_CLIENT_H
-#define IK_CLIENT_H
+#ifndef SRV_SYNC_H
+#define SRV_SYNC_H
 
 #include <rclcpp/rclcpp.hpp>
-#include <baxter_core_msgs/msg/joint_command.hpp>
-#include <baxter_core_msgs/srv/solve_position_ik.hpp>
-#include <algorithm>
-#include <tf2_ros/static_transform_broadcaster.h>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/buffer.h>
 
 using namespace std::chrono_literals;
-using baxter_core_msgs::srv::SolvePositionIK;
 
 template <class ServiceT>
 class ServiceNodeSync
@@ -66,4 +59,4 @@ protected:
 
 };
 
-#endif // IK_CLIENT_H
+#endif // SRV_SYNC_H
