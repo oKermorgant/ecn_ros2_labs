@@ -75,5 +75,12 @@ private:
 }
 
 
-#include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(lab3_puppet::PuppetNode)
+// boilerplate main function
+
+int main(int argc, char** argv)
+{
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<lab3_puppet::PuppetNode>(rclcpp::NodeOptions{}));
+  rclcpp::shutdown();
+  return 0;
+}

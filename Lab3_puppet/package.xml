@@ -12,7 +12,6 @@
   <depend>rclcpp</depend>
   <depend>baxter_core_msgs</depend>
   <depend>tf2_ros</depend>
-  <depend>rclcpp_components</depend>
   
   <export>
     <build_type>ament_cmake</build_type>
